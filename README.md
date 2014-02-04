@@ -1,3 +1,10 @@
+New location
+============
+
+Original work by https://github.com/sannies
+
+SEE https://github.com/inventage/nexus-apt-plugin FOR MAINTAINED REPO
+
 Nexus APT Plugin
 ================
 
