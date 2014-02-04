@@ -1,10 +1,3 @@
-New location
-============
-
-Original work by https://github.com/sannies
-
-SEE https://github.com/inventage/nexus-apt-plugin FOR MAINTAINED REPO
-
 Nexus APT Plugin
 ================
 
@@ -54,3 +47,8 @@ Adding a repository to sources.list
 just add the line `deb http://repository.yourcompany.com/content/repositories/releases/Packages.gz ./` 
 to your `/etc/apt/sources.list`. Type `apt-get update` and all debian packages in the repository
 can now be installed via `apt-get install`.
+
+Author
+======
+
+This plugin was created by https://github.com/sannies and is now maintained by https://github.com/inventage.

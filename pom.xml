@@ -19,8 +19,8 @@
     <name>Nexus APT Repository Plugin</name>
 
     <scm>
-        <connection>scm:git:https://github.com/sannies/nexus-apt-plugin.git</connection>
-        <developerConnection>scm:git:https://github.com/sannies/nexus-apt-plugin.git</developerConnection>
+        <connection>scm:git:https://github.com/inventage/nexus-apt-plugin.git</connection>
+        <developerConnection>scm:git:https://github.com/inventage/nexus-apt-plugin.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
@@ -150,7 +150,7 @@
                     <server>github</server>
                     <includeAttached>true</includeAttached>
                     <repositoryName>nexus-apt-plugin</repositoryName>
-                    <repositoryOwner>sannies</repositoryOwner>
+                    <repositoryOwner>inventage</repositoryOwner>
                     <includes>
                         <include>*.zip</include>
                     </includes>
