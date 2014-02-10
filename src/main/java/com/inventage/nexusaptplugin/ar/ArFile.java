@@ -29,8 +29,7 @@ import java.io.File;
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  */
-public class ArFile
-{
+public class ArFile {
     protected File file;
     protected String name;
     protected long lastModified;
@@ -39,54 +38,44 @@ public class ArFile
     protected int mode;
     protected long size;
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public long getLastModified()
-    {
+    public long getLastModified() {
         return lastModified;
     }
 
-    public int getOwnerId()
-    {
+    public int getOwnerId() {
         return ownerId;
     }
 
-    public int getGroupId()
-    {
+    public int getGroupId() {
         return groupId;
     }
 
-    public int getMode()
-    {
+    public int getMode() {
         return mode;
     }
 
-    public long getSize()
-    {
+    public long getSize() {
         return size;
     }
 
-    public static ArFile fromFile( File file )
-    {
-        if ( file == null )
-        {
-            throw new NullPointerException( "file" );
+    public static ArFile fromFile(File file) {
+        if (file == null) {
+            throw new NullPointerException("file");
         }
         ArFile arFile = new ArFile();
         arFile.file = file;
-        if ( arFile.name == null )
-        {
+        if (arFile.name == null) {
             arFile.name = file.getName();
         }
         arFile.mode = 420; // 664
         arFile.lastModified = file.lastModified() / 1000;
         arFile.size = file.length();
 
-        if ( arFile.name.length() > 16 )
-        {
+        if (arFile.name.length() > 16) {
             throw new FileNameTooLongException();
         }
 

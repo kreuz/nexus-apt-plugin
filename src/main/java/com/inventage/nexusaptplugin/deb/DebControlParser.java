@@ -26,7 +26,8 @@ public class DebControlParser {
                 String parts[] = line.split(":", 2);
                 lastKey = parts[0];
                 control.put(lastKey, parts[1].trim());
-            } else {
+            }
+            else {
                 control.put(lastKey, control.get(lastKey) + "\n" + line.trim());
             }
 

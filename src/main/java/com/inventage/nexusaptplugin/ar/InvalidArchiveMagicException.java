@@ -28,6 +28,5 @@ package com.inventage.nexusaptplugin.ar;
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  */
 public class InvalidArchiveMagicException
-    extends RuntimeException
-{
+        extends RuntimeException {
 }

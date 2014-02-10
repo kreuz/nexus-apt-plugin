@@ -20,8 +20,7 @@ import java.util.Map;
  *
  * @since 3.0
  */
-public class AptCapabilityConfiguration
-{
+public class AptCapabilityConfiguration {
 
     public static final String KEYRING = "keyring";
 
@@ -35,53 +34,45 @@ public class AptCapabilityConfiguration
 
     private String passphrase;
 
-    public AptCapabilityConfiguration()
-    {
-    	this(null, null, null);
+    public AptCapabilityConfiguration() {
+        this(null, null, null);
     }
 
     public AptCapabilityConfiguration(String keyring, String key, String passphrase) {
-    	this.keyring = keyring == null ? "" : keyring;
-    	this.key = key == null ? "" : key;
-    	this.passphrase = passphrase == null ? "" : passphrase;
+        this.keyring = keyring == null ? "" : keyring;
+        this.key = key == null ? "" : key;
+        this.passphrase = passphrase == null ? "" : passphrase;
     }
 
-    public AptCapabilityConfiguration(final Map<String, String> properties ) {
-    	this(properties.get(KEYRING), properties.get(KEY), properties.get(PASSPHRASE));
+    public AptCapabilityConfiguration(final Map<String, String> properties) {
+        this(properties.get(KEYRING), properties.get(KEY), properties.get(PASSPHRASE));
     }
 
-	public String getKeyring()
-	{
-		return keyring;
-	}
+    public String getKeyring() {
+        return keyring;
+    }
 
-	public void setKeyring(String keyring)
-	{
-		this.keyring = keyring;
-	}
+    public void setKeyring(String keyring) {
+        this.keyring = keyring;
+    }
 
-	public String getKey()
-	{
-		return key;
-	}
+    public String getKey() {
+        return key;
+    }
 
-	public void setKey(String key)
-	{
-		this.key = key;
-	}
+    public void setKey(String key) {
+        this.key = key;
+    }
 
-	public String getPassphrase()
-	{
-		return passphrase;
-	}
+    public String getPassphrase() {
+        return passphrase;
+    }
 
-	public void setPassphrase(String passphrase)
-	{
-		this.passphrase = passphrase;
-	}
+    public void setPassphrase(String passphrase) {
+        this.passphrase = passphrase;
+    }
 
-	public Map<String, String> asMap()
-    {
+    public Map<String, String> asMap() {
         Map<String, String> map = new HashMap<String, String>();
         map.put(KEYRING, keyring);
         map.put(KEY, key);

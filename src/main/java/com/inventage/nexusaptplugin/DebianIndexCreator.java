@@ -106,7 +106,8 @@ public class DebianIndexCreator
             if (md5.exists()) {
                 try {
                     ac.getArtifactInfo().md5 = StringUtils.chomp(FileUtils.fileRead(md5)).trim().split(" ")[0];
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     ac.addError(e);
                 }
             }
@@ -158,7 +159,7 @@ public class DebianIndexCreator
 
     public boolean updateArtifactInfo(Document doc, ArtifactInfo ai) {
         String filename = doc.get(FILENAME.getKey());
-        if(filename != null && filename.endsWith(".deb")) {
+        if (filename != null && filename.endsWith(".deb")) {
 
             ai.getAttributes().put(PACKAGE.getOntology().getFieldName(), doc.get(PACKAGE.getKey()));
             ai.getAttributes().put(ARCHITECTURE.getOntology().getFieldName(), doc.get(ARCHITECTURE.getKey()));

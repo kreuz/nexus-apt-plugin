@@ -44,27 +44,25 @@ public abstract class AbstractContentGenerator
 
     private final String fileName;
 
-    public AbstractContentGenerator(String mimeType, String fileName)
-	{
-		this.mimeType = mimeType;
-		this.fileName = fileName;
-	}
+    public AbstractContentGenerator(String mimeType, String fileName) {
+        this.mimeType = mimeType;
+        this.fileName = fileName;
+    }
 
 
-	@Override
+    @Override
     public ContentLocator generateContent(Repository repository, String path, StorageFileItem item)
             throws IllegalOperationException, ItemNotFoundException, LocalStorageException {
 
         RepositoryData data = new RepositoryData(repository.getId(),
-        	((DefaultIndexerManager)indexerManager).getRepositoryIndexContext(repository),
-        	new ArtifactInfoFilter()
-        	{
-	        	@Override
-				public boolean accepts(IndexingContext ctx, ArtifactInfo ai) {
-	        		return indexArtifactFilter.filterArtifactInfo(ai);
-	        	}
-        	},
-        	indexer);
+                ((DefaultIndexerManager) indexerManager).getRepositoryIndexContext(repository),
+                new ArtifactInfoFilter() {
+                    @Override
+                    public boolean accepts(IndexingContext ctx, ArtifactInfo ai) {
+                        return indexArtifactFilter.filterArtifactInfo(ai);
+                    }
+                },
+                indexer);
 
         return new FileManagerContentLocator(fileManager, mimeType, data, fileName);
     }

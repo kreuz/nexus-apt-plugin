@@ -8,14 +8,13 @@ import javax.inject.Named;
  */
 @Named(PackagesContentGenerator.ID)
 public class PackagesContentGenerator
-	extends AbstractContentGenerator {
+        extends AbstractContentGenerator {
     public static final String ID = "PackagesContentGenerator";
 
 
-	public PackagesContentGenerator()
-	{
-		super("application/text", "Packages");
-	}
+    public PackagesContentGenerator() {
+        super("application/text", "Packages");
+    }
 
     @Override
     public String getGeneratorId() {

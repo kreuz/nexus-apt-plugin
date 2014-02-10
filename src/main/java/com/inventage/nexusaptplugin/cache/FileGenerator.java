@@ -1,16 +1,15 @@
 package com.inventage.nexusaptplugin.cache;
 
 
-public interface FileGenerator
-{
+public interface FileGenerator {
 
-	/**
-	 * Generate the file
-	 * 
-	 * @param data
-	 * @return
-	 * @throws Exception 
-	 */
-	byte[] generateFile(RepositoryData data)
-		throws Exception;
+    /**
+     * Generate the file
+     *
+     * @param data
+     * @return
+     * @throws Exception
+     */
+    byte[] generateFile(RepositoryData data)
+            throws Exception;
 }

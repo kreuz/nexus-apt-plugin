@@ -13,30 +13,27 @@ import com.inventage.nexusaptplugin.cache.RepositoryData;
 
 @Named
 public class PackagesGzGenerator
-	implements FileGenerator
-{
-	private final DebianFileManager fileManager;
+        implements FileGenerator {
+    private final DebianFileManager fileManager;
 
-	@Inject
-	public PackagesGzGenerator(DebianFileManager fileManager)
-	{
-		this.fileManager = fileManager;
-	}
+    @Inject
+    public PackagesGzGenerator(DebianFileManager fileManager) {
+        this.fileManager = fileManager;
+    }
 
-	@Override
-	public byte[] generateFile(RepositoryData data)
-		throws Exception
-	{
-		byte[] packages = fileManager.getFile("Packages", data);
+    @Override
+    public byte[] generateFile(RepositoryData data)
+            throws Exception {
+        byte[] packages = fileManager.getFile("Packages", data);
 
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		GZIPOutputStream gz = new GZIPOutputStream(baos);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        GZIPOutputStream gz = new GZIPOutputStream(baos);
 
-		gz.write(packages);
+        gz.write(packages);
 
-		gz.close();
+        gz.close();
 
-		return baos.toByteArray();
-	}
+        return baos.toByteArray();
+    }
 
 }

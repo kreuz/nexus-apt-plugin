@@ -8,14 +8,13 @@ import javax.inject.Named;
  */
 @Named(ReleaseGPGContentGenerator.ID)
 public class ReleaseGPGContentGenerator
-	extends AbstractContentGenerator {
+        extends AbstractContentGenerator {
     public static final String ID = "ReleaseGPGContentGenerator";
 
 
-	public ReleaseGPGContentGenerator()
-	{
-		super("application/text", "Release.gpg");
-	}
+    public ReleaseGPGContentGenerator() {
+        super("application/text", "Release.gpg");
+    }
 
     @Override
     public String getGeneratorId() {

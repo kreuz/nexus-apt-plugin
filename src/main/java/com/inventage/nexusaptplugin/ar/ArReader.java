@@ -24,70 +24,65 @@ package com.inventage.nexusaptplugin.ar;
  * SOFTWARE.
  */
 
-import org.codehaus.plexus.util.IOUtil;
-
-import java.io.*;
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import org.codehaus.plexus.util.IOUtil;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  */
 public class ArReader
-    implements Closeable, Iterable<ReadableArFile>
-{
+        implements Closeable, Iterable<ReadableArFile> {
     private InputStream is;
 
-    public ArReader( File file )
-        throws IOException
-    {
-        is = new FileInputStream( file );
+    public ArReader(File file)
+            throws IOException {
+        is = new FileInputStream(file);
 
-        String magic = new String( ArUtil.readBytes( is, 8 ), ArUtil.US_ASCII );
+        String magic = new String(ArUtil.readBytes(is, 8), ArUtil.US_ASCII);
 
-        if ( !magic.equals( ArUtil.AR_ARCHIVE_MAGIC ) )
-        {
+        if (!magic.equals(ArUtil.AR_ARCHIVE_MAGIC)) {
             throw new InvalidArchiveMagicException();
         }
     }
 
-    public Iterator<ReadableArFile> iterator()
-    {
+    public Iterator<ReadableArFile> iterator() {
         return new ArFileIterator();
     }
 
-    public void close()
-    {
+    public void close() {
         IOUtil.close(is);
     }
 
     public ReadableArFile readFile()
-        throws IOException
-    {
-        byte[] bytes = ArUtil.readBytes( is, 60 );
+            throws IOException {
+        byte[] bytes = ArUtil.readBytes(is, 60);
 
-        if ( bytes == null )
-        {
+        if (bytes == null) {
             return null;
         }
 
-        ReadableArFile arFile = new ReadableArFile( is );
-        arFile.name = ArUtil.convertString( bytes, 0, 16 );
-        arFile.lastModified = Long.parseLong( ArUtil.convertString( bytes, 16, 12 ) );
-        arFile.ownerId = Integer.parseInt( ArUtil.convertString( bytes, 28, 6 ) );
-        arFile.groupId = Integer.parseInt( ArUtil.convertString( bytes, 34, 6 ) );
-        arFile.mode = Integer.parseInt( ArUtil.convertString( bytes, 40, 8 ), 8 );
-        arFile.size = Long.parseLong( ArUtil.convertString( bytes, 48, 10 ) );
+        ReadableArFile arFile = new ReadableArFile(is);
+        arFile.name = ArUtil.convertString(bytes, 0, 16);
+        arFile.lastModified = Long.parseLong(ArUtil.convertString(bytes, 16, 12));
+        arFile.ownerId = Integer.parseInt(ArUtil.convertString(bytes, 28, 6));
+        arFile.groupId = Integer.parseInt(ArUtil.convertString(bytes, 34, 6));
+        arFile.mode = Integer.parseInt(ArUtil.convertString(bytes, 40, 8), 8);
+        arFile.size = Long.parseLong(ArUtil.convertString(bytes, 48, 10));
 
-        if ( arFile.name.endsWith( "/" ) )
-        {
-            arFile.name = arFile.name.substring( 0, arFile.name.length() - 1 );
+        if (arFile.name.endsWith("/")) {
+            arFile.name = arFile.name.substring(0, arFile.name.length() - 1);
         }
 
-        String fileMagic = ArUtil.convertString( bytes, 58, 2 );
+        String fileMagic = ArUtil.convertString(bytes, 58, 2);
 
-        if ( !fileMagic.equals( ArUtil.AR_FILE_MAGIC ) )
-        {
+        if (!fileMagic.equals(ArUtil.AR_FILE_MAGIC)) {
             throw new InvalidFileMagicException();
         }
 
@@ -95,25 +90,21 @@ public class ArReader
     }
 
     public class ArFileIterator
-        implements Iterator<ReadableArFile>
-    {
+            implements Iterator<ReadableArFile> {
 
         private boolean used;
         private boolean atEnd;
         private ReadableArFile file;
 
-        public boolean hasNext()
-        {
+        public boolean hasNext() {
             updateNext();
             return file != null;
         }
 
-        public ReadableArFile next()
-        {
+        public ReadableArFile next() {
             updateNext();
 
-            if ( file == null )
-            {
+            if (file == null) {
                 throw new NoSuchElementException();
             }
 
@@ -122,46 +113,38 @@ public class ArReader
             return file;
         }
 
-        private void updateNext()
-        {
-            try
-            {
-                if ( used )
-                {
+        private void updateNext() {
+            try {
+                if (used) {
                     file.close();
                     file = null;
                     used = false;
                 }
 
                 // There already is an element ready
-                if ( file != null )
-                {
+                if (file != null) {
                     return;
                 }
 
                 // If we're at the end, don't call readFile() anymore as that will throw an IOException
-                if ( atEnd )
-                {
+                if (atEnd) {
                     return;
                 }
 
                 file = readFile();
                 atEnd = file == null;
 
-                if ( atEnd )
-                {
+                if (atEnd) {
                     close();
                 }
             }
-            catch ( IOException ex )
-            {
+            catch (IOException ex) {
                 // ignore
             }
         }
 
-        public void remove()
-        {
-            throw new UnsupportedOperationException( "Not implemented." );
+        public void remove() {
+            throw new UnsupportedOperationException("Not implemented.");
         }
     }
 }

@@ -21,42 +21,39 @@ import com.inventage.nexusaptplugin.sign.PGPSigner;
 
 @Named
 public class ReleaseGPGGenerator
-	implements FileGenerator
-{
-	private final DebianFileManager fileManager;
+        implements FileGenerator {
+    private final DebianFileManager fileManager;
 
-	private final AptSigningConfiguration signingConfiguration;
+    private final AptSigningConfiguration signingConfiguration;
 
 
-	@Inject
-	public ReleaseGPGGenerator(DebianFileManager fileManager,
-		AptSigningConfiguration signingConfiguration)
-	{
-		this.fileManager = fileManager;
-		this.signingConfiguration = signingConfiguration;
-	}
+    @Inject
+    public ReleaseGPGGenerator(DebianFileManager fileManager,
+                               AptSigningConfiguration signingConfiguration) {
+        this.fileManager = fileManager;
+        this.signingConfiguration = signingConfiguration;
+    }
 
-	@Override
-	public byte[] generateFile(RepositoryData data)
-		throws Exception
-	{
-		// Read Release
-		byte[] release = fileManager.getFile("Release", data);
+    @Override
+    public byte[] generateFile(RepositoryData data)
+            throws Exception {
+        // Read Release
+        byte[] release = fileManager.getFile("Release", data);
 
-		// Get the key and sign the Release file
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        // Get the key and sign the Release file
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-		PGPSigner signer = signingConfiguration.getSigner();
-		PGPSignatureGenerator signatureGenerator = new PGPSignatureGenerator(new BcPGPContentSignerBuilder(signer.getSecretKey().getPublicKey().getAlgorithm(), PGPUtil.SHA1));
-		signatureGenerator.init(PGPSignature.BINARY_DOCUMENT, signer.getPrivateKey());
+        PGPSigner signer = signingConfiguration.getSigner();
+        PGPSignatureGenerator signatureGenerator = new PGPSignatureGenerator(new BcPGPContentSignerBuilder(signer.getSecretKey().getPublicKey().getAlgorithm(), PGPUtil.SHA1));
+        signatureGenerator.init(PGPSignature.BINARY_DOCUMENT, signer.getPrivateKey());
 
-		BCPGOutputStream out = new BCPGOutputStream(new ArmoredOutputStream(baos));
-		signatureGenerator.update(release);
-		signatureGenerator.generate().encode(out);
+        BCPGOutputStream out = new BCPGOutputStream(new ArmoredOutputStream(baos));
+        signatureGenerator.update(release);
+        signatureGenerator.generate().encode(out);
 
-		out.close();
-		baos.close();
+        out.close();
+        baos.close();
 
-		return baos.toByteArray();
-	}
+        return baos.toByteArray();
+    }
 }

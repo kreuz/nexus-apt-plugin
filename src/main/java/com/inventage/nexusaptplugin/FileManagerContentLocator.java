@@ -12,45 +12,39 @@ import com.inventage.nexusaptplugin.cache.RepositoryData;
 
 
 public class FileManagerContentLocator
-	implements ContentLocator
-{
+        implements ContentLocator {
 
-	private final DebianFileManager fileManager;
+    private final DebianFileManager fileManager;
 
-	private final String mimeType;
+    private final String mimeType;
 
-	private final RepositoryData data;
+    private final RepositoryData data;
 
-	private final String name;
+    private final String name;
 
-	public FileManagerContentLocator(DebianFileManager fileManager,
-		String mimeType, RepositoryData data, String name)
-	{
-		this.fileManager = fileManager;
-		this.mimeType = mimeType;
-		this.data = data;
-		this.name = name;
-	}
+    public FileManagerContentLocator(DebianFileManager fileManager,
+                                     String mimeType, RepositoryData data, String name) {
+        this.fileManager = fileManager;
+        this.mimeType = mimeType;
+        this.data = data;
+        this.name = name;
+    }
 
-	@Override
-	public InputStream getContent()
-		throws IOException
-	{
-		try
-		{
-			return new ByteArrayInputStream(fileManager.getFile(name, data));
-		}
-		catch(ExecutionException e)
-		{
-			throw new IOException("Could not generate " + name, e);
-		}
-	}
+    @Override
+    public InputStream getContent()
+            throws IOException {
+        try {
+            return new ByteArrayInputStream(fileManager.getFile(name, data));
+        }
+        catch (ExecutionException e) {
+            throw new IOException("Could not generate " + name, e);
+        }
+    }
 
-	@Override
-	public String getMimeType()
-	{
-		return mimeType;
-	}
+    @Override
+    public String getMimeType() {
+        return mimeType;
+    }
 
     @Override
     public long getLength() {
@@ -58,9 +52,8 @@ public class FileManagerContentLocator
     }
 
     @Override
-	public boolean isReusable()
-	{
-		return false;
-	}
+    public boolean isReusable() {
+        return false;
+    }
 
 }

@@ -8,14 +8,13 @@ import javax.inject.Named;
  */
 @Named(SignKeyContentGenerator.ID)
 public class SignKeyContentGenerator
-	extends AbstractContentGenerator {
+        extends AbstractContentGenerator {
     public static final String ID = "SignKeyContentGenerator";
 
 
-	public SignKeyContentGenerator()
-	{
-		super("application/text", "apt-key.gpg.key");
-	}
+    public SignKeyContentGenerator() {
+        super("application/text", "apt-key.gpg.key");
+    }
 
     @Override
     public String getGeneratorId() {

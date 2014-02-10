@@ -9,17 +9,16 @@ import org.sonatype.nexus.capability.support.CapabilitySupport;
 
 import com.inventage.nexusaptplugin.sign.AptSigningConfiguration;
 
-@Named( AptCapabilityDescriptor.TYPE_ID )
+@Named(AptCapabilityDescriptor.TYPE_ID)
 public class AptCapability
-    extends CapabilitySupport<AptCapabilityConfiguration>
-{
-	private final AptSigningConfiguration signingConfiguration;
+        extends CapabilitySupport<AptCapabilityConfiguration> {
+    private final AptSigningConfiguration signingConfiguration;
 
     private AptCapabilityConfiguration configuration;
 
     @Inject
     public AptCapability(AptSigningConfiguration signingConfiguration) {
-    	this.signingConfiguration = signingConfiguration;
+        this.signingConfiguration = signingConfiguration;
     }
 
     @Override
@@ -49,9 +48,9 @@ public class AptCapability
 
     @Override
     public void onActivate() {
-    	signingConfiguration.setKeyring(configuration.getKeyring());
-    	signingConfiguration.setKey(configuration.getKey());
-    	signingConfiguration.setPassphrase(configuration.getPassphrase());
+        signingConfiguration.setKeyring(configuration.getKeyring());
+        signingConfiguration.setKey(configuration.getKey());
+        signingConfiguration.setPassphrase(configuration.getPassphrase());
     }
 
     @Override

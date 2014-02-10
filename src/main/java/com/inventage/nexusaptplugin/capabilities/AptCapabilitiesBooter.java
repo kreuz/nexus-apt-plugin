@@ -9,17 +9,16 @@ import org.sonatype.nexus.plugins.capabilities.support.CapabilityBooterSupport;
 @Named
 @Singleton
 public class AptCapabilitiesBooter
-    extends CapabilityBooterSupport
-{
+        extends CapabilityBooterSupport {
 
     @Override
-    protected void boot( final CapabilityRegistry registry ) throws Exception {
+    protected void boot(final CapabilityRegistry registry) throws Exception {
         maybeAddCapability(
-            registry,
-            AptCapabilityDescriptor.TYPE,
-            true, // enabled
-            null, // no notes
-            new AptCapabilityConfiguration().asMap()
+                registry,
+                AptCapabilityDescriptor.TYPE,
+                true, // enabled
+                null, // no notes
+                new AptCapabilityConfiguration().asMap()
         );
     }
 

@@ -31,60 +31,56 @@ import org.sonatype.nexus.plugins.capabilities.support.validator.Validators;
  * @since 3.0
  */
 @Singleton
-@Named( AptCapabilityDescriptor.TYPE_ID )
+@Named(AptCapabilityDescriptor.TYPE_ID)
 public class AptCapabilityDescriptor
-    extends CapabilityDescriptorSupport
-    implements CapabilityDescriptor
-{
+        extends CapabilityDescriptorSupport
+        implements CapabilityDescriptor {
 
     public static final String TYPE_ID = "apt";
 
-    public static final CapabilityType TYPE = capabilityType( TYPE_ID );
+    public static final CapabilityType TYPE = capabilityType(TYPE_ID);
 
     private final Validators validators;
 
     @Inject
-    public AptCapabilityDescriptor( final Validators validators )
-    {
+    public AptCapabilityDescriptor(final Validators validators) {
         super(
-            TYPE,
-            "APT: Configuration",
-            "APT plugin configuration.",
-            new StringTextFormField(
-                AptCapabilityConfiguration.KEYRING,
-                "Secure keyring location",
-                "The location of the GNU PG secure keyring to be used for signing",
-                FormField.OPTIONAL
-            ),
-            new StringTextFormField(
-                AptCapabilityConfiguration.KEY,
-                "Key ID",
-                "ID of the key in the secure keyring to be used for signing",
-                FormField.MANDATORY
-            ),
-            new StringTextFormField(
-                AptCapabilityConfiguration.PASSPHRASE,
-                "Passphrase for the key",
-                "Passphrase for the key to be used for signing",
-                FormField.MANDATORY
-            )
+                TYPE,
+                "APT: Configuration",
+                "APT plugin configuration.",
+                new StringTextFormField(
+                        AptCapabilityConfiguration.KEYRING,
+                        "Secure keyring location",
+                        "The location of the GNU PG secure keyring to be used for signing",
+                        FormField.OPTIONAL
+                ),
+                new StringTextFormField(
+                        AptCapabilityConfiguration.KEY,
+                        "Key ID",
+                        "ID of the key in the secure keyring to be used for signing",
+                        FormField.MANDATORY
+                ),
+                new StringTextFormField(
+                        AptCapabilityConfiguration.PASSPHRASE,
+                        "Passphrase for the key",
+                        "Passphrase for the key to be used for signing",
+                        FormField.MANDATORY
+                )
         );
         this.validators = validators;
     }
 
     @Override
-    public Validator validator()
-    {
+    public Validator validator() {
         return validators.logical().and(
-            validators.capability().uniquePer( TYPE )
+                validators.capability().uniquePer(TYPE)
         );
     }
 
     @Override
-    public Validator validator( final CapabilityIdentity id )
-    {
+    public Validator validator(final CapabilityIdentity id) {
         return validators.logical().and(
-            validators.capability().uniquePerExcluding( id, TYPE )
+                validators.capability().uniquePerExcluding(id, TYPE)
         );
     }
 
