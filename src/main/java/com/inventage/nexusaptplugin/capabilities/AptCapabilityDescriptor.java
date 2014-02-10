@@ -14,17 +14,20 @@ package com.inventage.nexusaptplugin.capabilities;
 
 import static org.sonatype.nexus.plugins.capabilities.CapabilityType.capabilityType;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.sonatype.nexus.capability.support.CapabilityDescriptorSupport;
 import org.sonatype.nexus.formfields.FormField;
 import org.sonatype.nexus.formfields.StringTextFormField;
 import org.sonatype.nexus.plugins.capabilities.CapabilityDescriptor;
 import org.sonatype.nexus.plugins.capabilities.CapabilityIdentity;
 import org.sonatype.nexus.plugins.capabilities.CapabilityType;
 import org.sonatype.nexus.plugins.capabilities.Validator;
-import org.sonatype.nexus.plugins.capabilities.support.CapabilityDescriptorSupport;
 import org.sonatype.nexus.plugins.capabilities.support.validator.Validators;
 
 /**
@@ -44,10 +47,27 @@ public class AptCapabilityDescriptor
 
     @Inject
     public AptCapabilityDescriptor(final Validators validators) {
-        super(
-                TYPE,
-                "APT: Configuration",
-                "APT plugin configuration.",
+        this.validators = validators;
+    }
+
+    @Override
+    public CapabilityType type() {
+        return TYPE;
+    }
+
+    @Override
+    public String name() {
+        return "APT: Configuration";
+    }
+
+    @Override
+    public String about() {
+        return "APT plugin configuration.";
+    }
+
+    @Override
+    public List<FormField> formFields() {
+        return Arrays.<FormField>asList(
                 new StringTextFormField(
                         AptCapabilityConfiguration.KEYRING,
                         "Secure keyring location",
@@ -65,9 +85,7 @@ public class AptCapabilityDescriptor
                         "Passphrase for the key",
                         "Passphrase for the key to be used for signing",
                         FormField.MANDATORY
-                )
-        );
-        this.validators = validators;
+                ));
     }
 
     @Override
