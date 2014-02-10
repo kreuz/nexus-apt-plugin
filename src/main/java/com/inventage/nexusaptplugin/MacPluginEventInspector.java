@@ -15,7 +15,6 @@ import org.sonatype.nexus.proxy.IllegalOperationException;
 import org.sonatype.nexus.proxy.ItemNotFoundException;
 import org.sonatype.nexus.proxy.RepositoryNotAvailableException;
 import org.sonatype.nexus.proxy.ResourceStoreRequest;
-import org.sonatype.nexus.proxy.StorageException;
 import org.sonatype.nexus.proxy.events.RepositoryEventLocalStatusChanged;
 import org.sonatype.nexus.proxy.events.RepositoryItemEventDelete;
 import org.sonatype.nexus.proxy.events.RepositoryItemEventStore;
@@ -184,7 +183,7 @@ public class MacPluginEventInspector
         }
     }
 
-    private void storeItem(Repository repository, String filePath, String generatorId) throws UnsupportedStorageOperationException, IllegalOperationException, StorageException {
+    private void storeItem(Repository repository, String filePath, String generatorId) throws UnsupportedStorageOperationException, IllegalOperationException, IOException {
         DefaultStorageFileItem file =
                 new DefaultStorageFileItem(repository,
                         new ResourceStoreRequest(filePath), true, false,
