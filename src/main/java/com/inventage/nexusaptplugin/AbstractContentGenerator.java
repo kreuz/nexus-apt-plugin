@@ -5,7 +5,7 @@ import javax.inject.Inject;
 
 import org.apache.maven.index.ArtifactInfo;
 import org.apache.maven.index.ArtifactInfoFilter;
-import org.apache.maven.index.NexusIndexer;
+import org.apache.maven.index.Indexer;
 import org.apache.maven.index.context.IndexingContext;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.sonatype.nexus.index.DefaultIndexerManager;
@@ -35,7 +35,7 @@ public abstract class AbstractContentGenerator
     private IndexArtifactFilter indexArtifactFilter;
 
     @Requirement
-    private NexusIndexer indexer;
+    private Indexer indexer;
 
     @Inject
     private DebianFileManager fileManager;

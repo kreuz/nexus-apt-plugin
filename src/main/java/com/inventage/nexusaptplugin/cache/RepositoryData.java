@@ -1,7 +1,7 @@
 package com.inventage.nexusaptplugin.cache;
 
 import org.apache.maven.index.ArtifactInfoFilter;
-import org.apache.maven.index.NexusIndexer;
+import org.apache.maven.index.Indexer;
 import org.apache.maven.index.context.IndexingContext;
 
 public class RepositoryData {
@@ -11,10 +11,10 @@ public class RepositoryData {
 
     private final ArtifactInfoFilter artifactInfoFilter;
 
-    private final NexusIndexer indexer;
+    private final Indexer indexer;
 
     public RepositoryData(String repositoryId, IndexingContext indexingContext,
-                          ArtifactInfoFilter artifactInfoFilter, NexusIndexer indexer) {
+                          ArtifactInfoFilter artifactInfoFilter, Indexer indexer) {
         this.repositoryId = repositoryId;
         this.indexingContext = indexingContext;
         this.artifactInfoFilter = artifactInfoFilter;
@@ -33,8 +33,7 @@ public class RepositoryData {
         return artifactInfoFilter;
     }
 
-    public NexusIndexer getIndexer() {
+    public Indexer getIndexer() {
         return indexer;
     }
-
 }
