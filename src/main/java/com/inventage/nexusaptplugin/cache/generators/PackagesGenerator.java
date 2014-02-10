@@ -10,12 +10,13 @@ import javax.inject.Named;
 
 import org.apache.lucene.search.Query;
 import org.apache.maven.index.ArtifactInfo;
+import org.apache.maven.index.Indexer;
 import org.apache.maven.index.IteratorSearchRequest;
 import org.apache.maven.index.IteratorSearchResponse;
 import org.apache.maven.index.MAVEN;
-import org.apache.maven.index.NexusIndexer;
 import org.apache.maven.index.SearchType;
 import org.apache.maven.index.context.IndexingContext;
+import org.apache.maven.index.expr.SearchTypedStringSearchExpression;
 
 import com.inventage.nexusaptplugin.cache.FileGenerator;
 import com.inventage.nexusaptplugin.cache.RepositoryData;
@@ -37,16 +38,16 @@ public class PackagesGenerator
     @Override
     public byte[] generateFile(RepositoryData data)
             throws Exception {
-        NexusIndexer indexer = data.getIndexer();
-        IndexingContext indexingContext = data.getIndexingContext();
+        final Indexer indexer = data.getIndexer();
+        final IndexingContext indexingContext = data.getIndexingContext();
 
-        Query pq = indexer.constructQuery(MAVEN.PACKAGING, "deb", SearchType.EXACT);
+        final Query pq = indexer.constructQuery(MAVEN.PACKAGING, new SearchTypedStringSearchExpression("deb", SearchType.EXACT));
 
-        IteratorSearchRequest sreq = new IteratorSearchRequest(pq, indexingContext);
-        IteratorSearchResponse hits = indexer.searchIterator(sreq);
+        final IteratorSearchRequest sreq = new IteratorSearchRequest(pq, indexingContext);
+        final IteratorSearchResponse hits = indexer.searchIterator(sreq);
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        OutputStreamWriter w = new OutputStreamWriter(baos);
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final OutputStreamWriter w = new OutputStreamWriter(baos);
 
         for (ArtifactInfo hit : hits) {
             Map<String, String> attrs = hit.getAttributes();
