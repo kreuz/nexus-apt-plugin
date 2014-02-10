@@ -9,9 +9,9 @@
         <version>2.7.0-01</version>
     </parent>
 
-    <groupId>com.github.nexus-apt-plugin</groupId>
+    <groupId>com.inventage.nexus-apt-plugin</groupId>
     <artifactId>nexus-apt-plugin</artifactId>
-    <version>0.7-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
 
     <packaging>nexus-plugin</packaging>
 
