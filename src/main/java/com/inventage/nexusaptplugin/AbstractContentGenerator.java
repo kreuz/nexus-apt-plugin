@@ -34,7 +34,7 @@ public abstract class AbstractContentGenerator
     @Inject
     private IndexArtifactFilter indexArtifactFilter;
 
-    @Requirement
+    @Inject
     private Indexer indexer;
 
     @Inject
