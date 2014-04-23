@@ -18,6 +18,15 @@ neccessary to delete the index files under sonatype-work/nexus/indexer
 All repositories now contain a Packages.gz that lists all debian packages the indexer was able 
 to find.
 
+Compatibility
+-------------
+
+| Nexus Version | Plugin Version |
+| ------------- | -------------- |
+| 2.8.x         | 1.0.0          |
+| 2.7.x         | 0.6            |
+
+
 Debian Packages from a Maven Build Process
 ------------------------------------------
 https://github.com/sannies/blogger-java-deb is a small example on how to create debs in a 
