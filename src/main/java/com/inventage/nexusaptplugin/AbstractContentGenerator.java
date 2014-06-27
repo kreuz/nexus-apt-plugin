@@ -7,7 +7,6 @@ import org.apache.maven.index.ArtifactInfo;
 import org.apache.maven.index.ArtifactInfoFilter;
 import org.apache.maven.index.Indexer;
 import org.apache.maven.index.context.IndexingContext;
-import org.codehaus.plexus.component.annotations.Requirement;
 import org.sonatype.nexus.index.DefaultIndexerManager;
 import org.sonatype.nexus.index.IndexArtifactFilter;
 import org.sonatype.nexus.index.IndexerManager;

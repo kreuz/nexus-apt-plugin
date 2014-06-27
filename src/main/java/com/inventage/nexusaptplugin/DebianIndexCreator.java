@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import javax.inject.Named;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -32,11 +33,9 @@ import org.apache.maven.index.ArtifactContext;
 import org.apache.maven.index.ArtifactInfo;
 import org.apache.maven.index.IndexerField;
 import org.apache.maven.index.IndexerFieldVersion;
-import org.apache.maven.index.context.IndexCreator;
 import org.apache.maven.index.creator.AbstractIndexCreator;
 import org.apache.maven.index.creator.MinimalArtifactInfoIndexCreator;
 import org.apache.maven.index.locator.Md5Locator;
-import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.StringUtils;
 
@@ -52,7 +51,8 @@ import com.inventage.nexusaptplugin.deb.GetControl;
  *
  * @author cstamas
  */
-@Component(role = IndexCreator.class, hint = DebianIndexCreator.ID)
+@Named(DebianIndexCreator.ID)
+@javax.inject.Singleton
 public class DebianIndexCreator
         extends AbstractIndexCreator {
 
