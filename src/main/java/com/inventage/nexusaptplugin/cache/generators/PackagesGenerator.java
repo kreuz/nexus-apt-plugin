@@ -4,8 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.Map;
-
-import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.lucene.search.Query;
@@ -31,7 +29,6 @@ public class PackagesGenerator
             "Breaks", "Conflicts", "Replaces", "Provides"
     };
 
-    @Inject
     public PackagesGenerator() {
     }
 

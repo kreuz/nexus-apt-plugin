@@ -55,7 +55,6 @@ import com.inventage.nexusaptplugin.deb.GetControl;
 @Component(role = IndexCreator.class, hint = DebianIndexCreator.ID)
 public class DebianIndexCreator
         extends AbstractIndexCreator {
-    Md5Locator md5Locator = new Md5Locator();
 
     public static final String ID = "debian-package";
 
@@ -77,6 +76,9 @@ public class DebianIndexCreator
     public static final IndexerField DEPENDS = new IndexerField(DEBIAN.DEPENDS, IndexerFieldVersion.V1, "deb_depends",
             DEBIAN.DEPENDS.getDescription(), Field.Store.YES, Field.Index.NO);
 
+    public static final IndexerField PRE_DEPENDS = new IndexerField(DEBIAN.PRE_DEPENDS, IndexerFieldVersion.V1, "deb_pre_depends",
+            DEBIAN.PRE_DEPENDS.getDescription(), Field.Store.YES, Field.Index.NO);
+
     public static final IndexerField SECTION = new IndexerField(DEBIAN.SECTION, IndexerFieldVersion.V1, "deb_section",
             DEBIAN.SECTION.getDescription(), Field.Store.YES, Field.Index.NO);
 
@@ -92,6 +94,8 @@ public class DebianIndexCreator
     public static final IndexerField FILENAME = new IndexerField(DEBIAN.FILENAME, IndexerFieldVersion.V1, "deb_filename",
             DEBIAN.FILENAME.getDescription(), Field.Store.YES, Field.Index.NO);
 
+    private final Md5Locator md5Locator = new Md5Locator();
+    private final List<IndexerField> indexerFields = Arrays.asList(PACKAGE, ARCHITECTURE, INSTALLED_SIZE, MAINTAINER, VERSION, DEPENDS, PRE_DEPENDS, SECTION, PRIORITY, DESCRIPTION, FILENAME);
 
     public DebianIndexCreator() {
         super(ID, Arrays.asList(MinimalArtifactInfoIndexCreator.ID));
@@ -121,35 +125,8 @@ public class DebianIndexCreator
 
     public void updateDocument(ArtifactInfo ai, Document doc) {
         if ("deb".equals(ai.packaging)) {
-            if (ai.getAttributes().get(PACKAGE.getOntology().getFieldName()) != null) {
-                doc.add(PACKAGE.toField(ai.getAttributes().get(PACKAGE.getOntology().getFieldName())));
-            }
-            if (ai.getAttributes().get(ARCHITECTURE.getOntology().getFieldName()) != null) {
-                doc.add(ARCHITECTURE.toField(ai.getAttributes().get(ARCHITECTURE.getOntology().getFieldName())));
-            }
-            if (ai.getAttributes().get(INSTALLED_SIZE.getOntology().getFieldName()) != null) {
-                doc.add(INSTALLED_SIZE.toField(ai.getAttributes().get(INSTALLED_SIZE.getOntology().getFieldName())));
-            }
-            if (ai.getAttributes().get(MAINTAINER.getOntology().getFieldName()) != null) {
-                doc.add(MAINTAINER.toField(ai.getAttributes().get(MAINTAINER.getOntology().getFieldName())));
-            }
-            if (ai.getAttributes().get(VERSION.getOntology().getFieldName()) != null) {
-                doc.add(VERSION.toField(ai.getAttributes().get(VERSION.getOntology().getFieldName())));
-            }
-            if (ai.getAttributes().get(DEPENDS.getOntology().getFieldName()) != null) {
-                doc.add(DEPENDS.toField(ai.getAttributes().get(DEPENDS.getOntology().getFieldName())));
-            }
-            if (ai.getAttributes().get(SECTION.getOntology().getFieldName()) != null) {
-                doc.add(SECTION.toField(ai.getAttributes().get(SECTION.getOntology().getFieldName())));
-            }
-            if (ai.getAttributes().get(PRIORITY.getOntology().getFieldName()) != null) {
-                doc.add(PRIORITY.toField(ai.getAttributes().get(PRIORITY.getOntology().getFieldName())));
-            }
-            if (ai.getAttributes().get(DESCRIPTION.getOntology().getFieldName()) != null) {
-                doc.add(DESCRIPTION.toField(ai.getAttributes().get(DESCRIPTION.getOntology().getFieldName())));
-            }
-            if (ai.getAttributes().get(FILENAME.getOntology().getFieldName()) != null) {
-                doc.add(FILENAME.toField(ai.getAttributes().get(FILENAME.getOntology().getFieldName())));
+            for (IndexerField indexerField : indexerFields) {
+                updateOneDocumentField(ai, doc, indexerField);
             }
             if (ai.md5 != null) {
                 doc.add(MD5.toField(ai.md5));
@@ -157,24 +134,26 @@ public class DebianIndexCreator
         }
     }
 
+    private void updateOneDocumentField(ArtifactInfo ai, Document doc, IndexerField indexerField) {
+        if (ai.getAttributes().get(indexerField.getOntology().getFieldName()) != null) {
+            doc.add(indexerField.toField(ai.getAttributes().get(indexerField.getOntology().getFieldName())));
+        }
+    }
+
     public boolean updateArtifactInfo(Document doc, ArtifactInfo ai) {
         String filename = doc.get(FILENAME.getKey());
         if (filename != null && filename.endsWith(".deb")) {
-
-            ai.getAttributes().put(PACKAGE.getOntology().getFieldName(), doc.get(PACKAGE.getKey()));
-            ai.getAttributes().put(ARCHITECTURE.getOntology().getFieldName(), doc.get(ARCHITECTURE.getKey()));
-            ai.getAttributes().put(INSTALLED_SIZE.getOntology().getFieldName(), doc.get(INSTALLED_SIZE.getKey()));
-            ai.getAttributes().put(MAINTAINER.getOntology().getFieldName(), doc.get(MAINTAINER.getKey()));
-            ai.getAttributes().put(VERSION.getOntology().getFieldName(), doc.get(VERSION.getKey()));
-            ai.getAttributes().put(DEPENDS.getOntology().getFieldName(), doc.get(DEPENDS.getKey()));
-            ai.getAttributes().put(SECTION.getOntology().getFieldName(), doc.get(SECTION.getKey()));
-            ai.getAttributes().put(PRIORITY.getOntology().getFieldName(), doc.get(PRIORITY.getKey()));
-            ai.getAttributes().put(DESCRIPTION.getOntology().getFieldName(), doc.get(DESCRIPTION.getKey()));
-            ai.getAttributes().put(FILENAME.getOntology().getFieldName(), doc.get(FILENAME.getKey()));
+            for (IndexerField indexerField : indexerFields) {
+                updateOneArtifactInfoAttribute(doc, ai, indexerField);
+            }
             ai.md5 = doc.get(MD5.getKey());
             return true;
         }
         return false;
+    }
+
+    private void updateOneArtifactInfoAttribute(Document doc, ArtifactInfo ai, IndexerField indexerField) {
+        ai.getAttributes().put(indexerField.getOntology().getFieldName(), doc.get(indexerField.getKey()));
     }
 
     // ==
