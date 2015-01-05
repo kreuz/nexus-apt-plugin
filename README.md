@@ -21,10 +21,10 @@ to find.
 Compatibility
 -------------
 
-| Nexus Version | Plugin Version |
-| ------------- | -------------- |
-| 2.8.x         | 1.0.1          |
-| 2.7.x         | 0.6            |
+| Nexus Version     | Plugin Version |
+| ----------------- | -------------- |
+| 2.8.x and greater | 1.0.1          |
+| 2.7.x             | 0.6            |
 
 
 Debian Packages from a Maven Build Process
