@@ -10,7 +10,7 @@ Installation
 
 The 'Downloads' section of this project contains the latest builds. Please download the latest 
 nexus-apt-plugin-N.N-bundle.zip and unzip it into the sonatype-work/nexus/plugin-repository/
-and restart nexus. 
+and restart nexus.
 
 > to be sure that the index is regenerated (the plugin adds attributes to index) it could be 
 neccessary to delete the index files under sonatype-work/nexus/indexer
@@ -39,21 +39,35 @@ Pitfall
 The indexer cannot find packages when there is a main artifact with the same name:
 If the artifacts are named like:
 
--  nexus-apt-plugin-0.5.jar 
--  nexus-apt-plugin-0.5.deb 
+-  nexus-apt-plugin-0.5.jar
+-  nexus-apt-plugin-0.5.deb
 
 The indexer won't index the debian package. In order to make the indexer index the debian 
 package it needs a classifier:
 
--  nexus-apt-plugin-0.5.jar 
--  nexus-apt-plugin-0.5-all.deb 
-  
+-  nexus-apt-plugin-0.5.jar
+-  nexus-apt-plugin-0.5-all.deb
+
 This is fine.
+
+Known Bug
+---------
+
+When maven uploads an artifact to Nexus, it uploads 2 files: the deb file
+and the pom. Nexus then indexes the artifact, but it does this for the 2 files simultaneously.
+Depending on which file is uploaded last (seems to be random), the debian package information
+may or may not be in the index and therefore may or may not be in the Packages/Packages.gz
+files.
+
+To fix the index contents, start an 'Update Index' action on the repository.
+
+This is an issue with the indexer in Nexus 2.x.y. Sonatype is planning to use a new indexer
+technology in their Nexus 3.0 release.
 
 Adding a repository to sources.list
 ===================================
 
-just add the line `deb http://repository.yourcompany.com/content/repositories/releases/Packages.gz ./` 
+just add the line `deb http://repository.yourcompany.com/content/repositories/releases/ ./`
 to your `/etc/apt/sources.list`. Type `apt-get update` and all debian packages in the repository
 can now be installed via `apt-get install`.
 
