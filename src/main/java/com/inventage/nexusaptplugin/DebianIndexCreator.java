@@ -79,6 +79,27 @@ public class DebianIndexCreator
     public static final IndexerField PRE_DEPENDS = new IndexerField(DEBIAN.PRE_DEPENDS, IndexerFieldVersion.V1, "deb_pre_depends",
             DEBIAN.PRE_DEPENDS.getDescription(), Field.Store.YES, Field.Index.NO);
 
+    public static final IndexerField PROVIDES = new IndexerField(DEBIAN.PROVIDES, IndexerFieldVersion.V1, "deb_provides",
+            DEBIAN.PROVIDES.getDescription(), Field.Store.YES, Field.Index.NO);
+
+    public static final IndexerField RECOMMENDS = new IndexerField(DEBIAN.RECOMMENDS, IndexerFieldVersion.V1, "deb_recommends",
+            DEBIAN.RECOMMENDS.getDescription(), Field.Store.YES, Field.Index.NO);
+
+    public static final IndexerField SUGGESTS = new IndexerField(DEBIAN.SUGGESTS, IndexerFieldVersion.V1, "deb_suggests",
+            DEBIAN.SUGGESTS.getDescription(), Field.Store.YES, Field.Index.NO);
+
+    public static final IndexerField ENHANCES = new IndexerField(DEBIAN.ENHANCES, IndexerFieldVersion.V1, "deb_enhances",
+            DEBIAN.ENHANCES.getDescription(), Field.Store.YES, Field.Index.NO);
+
+    public static final IndexerField BREAKS = new IndexerField(DEBIAN.BREAKS, IndexerFieldVersion.V1, "deb_breaks",
+            DEBIAN.BREAKS.getDescription(), Field.Store.YES, Field.Index.NO);
+
+    public static final IndexerField CONFLICTS = new IndexerField(DEBIAN.CONFLICTS, IndexerFieldVersion.V1, "deb_conflicts",
+            DEBIAN.CONFLICTS.getDescription(), Field.Store.YES, Field.Index.NO);
+
+    public static final IndexerField REPLACES = new IndexerField(DEBIAN.REPLACES, IndexerFieldVersion.V1, "deb_replaces",
+            DEBIAN.REPLACES.getDescription(), Field.Store.YES, Field.Index.NO);
+
     public static final IndexerField SECTION = new IndexerField(DEBIAN.SECTION, IndexerFieldVersion.V1, "deb_section",
             DEBIAN.SECTION.getDescription(), Field.Store.YES, Field.Index.NO);
 
@@ -94,13 +115,18 @@ public class DebianIndexCreator
     public static final IndexerField FILENAME = new IndexerField(DEBIAN.FILENAME, IndexerFieldVersion.V1, "deb_filename",
             DEBIAN.FILENAME.getDescription(), Field.Store.YES, Field.Index.NO);
 
+
+
     private final Md5Locator md5Locator = new Md5Locator();
-    private final List<IndexerField> indexerFields = Arrays.asList(PACKAGE, ARCHITECTURE, INSTALLED_SIZE, MAINTAINER, VERSION, DEPENDS, PRE_DEPENDS, SECTION, PRIORITY, DESCRIPTION, FILENAME);
+    private final List<IndexerField> indexerFields = Arrays.asList(PACKAGE, ARCHITECTURE, INSTALLED_SIZE, MAINTAINER, VERSION,
+            DEPENDS, PRE_DEPENDS, PROVIDES, RECOMMENDS, SUGGESTS, ENHANCES, BREAKS, CONFLICTS, REPLACES,
+            SECTION, PRIORITY, DESCRIPTION, FILENAME);
 
     public DebianIndexCreator() {
         super(ID, Arrays.asList(MinimalArtifactInfoIndexCreator.ID));
     }
 
+    @Override
     public void populateArtifactInfo(ArtifactContext ac) throws IOException {
         if (ac.getArtifact() != null && "deb".equals(ac.getArtifactInfo().packaging)) {
             List<String> control = GetControl.doGet(ac.getArtifact());
@@ -123,6 +149,7 @@ public class DebianIndexCreator
     }
 
 
+    @Override
     public void updateDocument(ArtifactInfo ai, Document doc) {
         if ("deb".equals(ai.packaging)) {
             for (IndexerField indexerField : indexerFields) {
@@ -140,6 +167,7 @@ public class DebianIndexCreator
         }
     }
 
+    @Override
     public boolean updateArtifactInfo(Document doc, ArtifactInfo ai) {
         String filename = doc.get(FILENAME.getKey());
         if (filename != null && filename.endsWith(".deb")) {

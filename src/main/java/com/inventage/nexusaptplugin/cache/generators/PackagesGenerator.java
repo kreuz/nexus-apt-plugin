@@ -8,6 +8,7 @@ import javax.inject.Named;
 
 import org.apache.lucene.search.Query;
 import org.apache.maven.index.ArtifactInfo;
+import org.apache.maven.index.Field;
 import org.apache.maven.index.Indexer;
 import org.apache.maven.index.IteratorSearchRequest;
 import org.apache.maven.index.IteratorSearchResponse;
@@ -16,6 +17,7 @@ import org.apache.maven.index.SearchType;
 import org.apache.maven.index.context.IndexingContext;
 import org.apache.maven.index.expr.SearchTypedStringSearchExpression;
 
+import com.inventage.nexusaptplugin.DEBIAN;
 import com.inventage.nexusaptplugin.cache.FileGenerator;
 import com.inventage.nexusaptplugin.cache.RepositoryData;
 
@@ -24,9 +26,9 @@ import com.inventage.nexusaptplugin.cache.RepositoryData;
 public class PackagesGenerator
         implements FileGenerator {
     /* Taken from http://www.debian.org/doc/manuals/debian-reference/ch02.en.html#_package_dependencies */
-    private static final String[] PACKAGE_DEPENDENCIES_FIELD = new String[]{
-            "Depends", "Pre-Depends", "Recommends", "Suggests", "Enhances",
-            "Breaks", "Conflicts", "Replaces", "Provides"
+    private static final Field[] PACKAGE_DEPENDENCIES_FIELD = new Field[]{
+            DEBIAN.DEPENDS, DEBIAN.PRE_DEPENDS, DEBIAN.PROVIDES, DEBIAN.RECOMMENDS, DEBIAN.SUGGESTS, DEBIAN.ENHANCES,
+            DEBIAN.BREAKS, DEBIAN.CONFLICTS, DEBIAN.REPLACES
     };
 
     public PackagesGenerator() {
@@ -61,7 +63,7 @@ public class PackagesGenerator
             w.write("Maintainer: " + attrs.get("Maintainer") + "\n");
             w.write("Installed-Size: " + attrs.get("Installed-Size") + "\n");
             /* Those are not mandatory */
-            for (String fieldName : PACKAGE_DEPENDENCIES_FIELD) {
+            for (Field fieldName : PACKAGE_DEPENDENCIES_FIELD) {
                 writeIfNonEmpty(w, hit, fieldName);
             }
             w.write("Filename: " + attrs.get("Filename") + "\n");
@@ -77,11 +79,11 @@ public class PackagesGenerator
         return baos.toByteArray();
     }
 
-    private void writeIfNonEmpty(OutputStreamWriter w, ArtifactInfo hit, String fieldName)
+    private void writeIfNonEmpty(OutputStreamWriter w, ArtifactInfo hit, Field field)
             throws IOException {
-        String fieldValue = hit.getAttributes().get(fieldName);
+        String fieldValue = hit.getAttributes().get(field.getFieldName());
         if (fieldValue != null && !fieldValue.isEmpty()) {
-            w.write(fieldName + ": " + fieldValue + "\n");
+            w.write(field.getFieldName() + ": " + fieldValue + "\n");
         }
     }
 
