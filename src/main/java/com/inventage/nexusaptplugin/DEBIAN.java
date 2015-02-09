@@ -20,6 +20,13 @@ public interface DEBIAN {
     Field INSTALLED_SIZE = new Field(null, DEBIAN_NAMESPACE, "Installed-Size", "Debian Package Installed Size");
     Field DEPENDS = new Field(null, DEBIAN_NAMESPACE, "Depends", "Debian Package Depends");
     Field PRE_DEPENDS = new Field(null, DEBIAN_NAMESPACE, "Pre-Depends", "Debian Package Pre-Depends");
+    Field PROVIDES = new Field(null, DEBIAN_NAMESPACE, "Provides", "Debian Package Provides");
+    Field RECOMMENDS = new Field(null, DEBIAN_NAMESPACE, "Recommends", "Debian Package Recommends");
+    Field SUGGESTS = new Field(null, DEBIAN_NAMESPACE, "Suggests", "Debian Package Suggests");
+    Field ENHANCES = new Field(null, DEBIAN_NAMESPACE, "Enhances", "Debian Package Enhances");
+    Field BREAKS = new Field(null, DEBIAN_NAMESPACE, "Breaks", "Debian Package Breaks");
+    Field CONFLICTS = new Field(null, DEBIAN_NAMESPACE, "Conflicts", "Debian Package Conflicts");
+    Field REPLACES = new Field(null, DEBIAN_NAMESPACE, "Replaces", "Debian Package Replaces");
     Field SECTION = new Field(null, DEBIAN_NAMESPACE, "Section", "Debian Package Section");
     Field PRIORITY = new Field(null, DEBIAN_NAMESPACE, "Priority", "Debian Package Priority");
     Field DESCRIPTION = new Field(null, DEBIAN_NAMESPACE, "Description", "Debian Package Description");
