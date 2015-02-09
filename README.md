@@ -23,7 +23,7 @@ Compatibility
 
 | Nexus Version     | Plugin Version |
 | ----------------- | -------------- |
-| 2.8.x and greater | 1.0.1          |
+| 2.8.x and greater | 1.0.2          |
 | 2.7.x             | 0.6            |
 
 
