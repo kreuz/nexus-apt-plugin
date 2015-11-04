@@ -6,8 +6,11 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-import javax.inject.Named;
+import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 
 import com.inventage.nexusaptplugin.cache.generators.PackagesGenerator;
 import com.inventage.nexusaptplugin.cache.generators.PackagesGzGenerator;
@@ -16,11 +19,6 @@ import com.inventage.nexusaptplugin.cache.generators.ReleaseGenerator;
 import com.inventage.nexusaptplugin.cache.generators.SignKeyGenerator;
 import com.inventage.nexusaptplugin.sign.AptSigningConfiguration;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.inject.Inject;
-
-@Named
 @Singleton
 public class DebianFileManager {
 
@@ -29,7 +27,7 @@ public class DebianFileManager {
     private final Map<String, FileGenerator> generators;
 
     @Inject
-    public DebianFileManager(AptSigningConfiguration signingConfiguration) {
+    public DebianFileManager(AptSigningConfiguration aptSigningConfiguration) {
         this.cache = CacheBuilder.newBuilder()
                 .expireAfterWrite(5, TimeUnit.SECONDS)
                 .build();
@@ -39,8 +37,8 @@ public class DebianFileManager {
         registerGenerator("Packages", new PackagesGenerator());
         registerGenerator("Packages.gz", new PackagesGzGenerator(this));
         registerGenerator("Release", new ReleaseGenerator(this));
-        registerGenerator("Release.gpg", new ReleaseGPGGenerator(this, signingConfiguration));
-        registerGenerator("apt-key.gpg.key", new SignKeyGenerator(signingConfiguration));
+        registerGenerator("Release.gpg", new ReleaseGPGGenerator(this, aptSigningConfiguration));
+        registerGenerator("apt-key.gpg.key", new SignKeyGenerator(aptSigningConfiguration));
     }
 
     public void registerGenerator(String name, FileGenerator generator) {

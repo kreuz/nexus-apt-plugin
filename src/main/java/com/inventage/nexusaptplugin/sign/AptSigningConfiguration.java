@@ -8,48 +8,39 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 
-import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.bouncycastle.openpgp.PGPException;
+import org.sonatype.nexus.events.EventSubscriber;
 
+import com.google.common.eventbus.Subscribe;
+
+import com.inventage.nexusaptplugin.capabilities.AptCapabilityConfiguration;
+import com.inventage.nexusaptplugin.capabilities.AptSigningDeactivatedEvent;
+import com.inventage.nexusaptplugin.capabilities.AptSigningUpdatedEvent;
 
 @Named
 @Singleton
-public class AptSigningConfiguration {
+public class AptSigningConfiguration implements EventSubscriber {
+
     private String keyring;
-
     private String key;
-
     private String passphrase;
 
-    @Inject
-    public AptSigningConfiguration() {
+    @Subscribe
+    public void onSigningUpdated(AptSigningUpdatedEvent event) {
+        final AptCapabilityConfiguration aptCapabilityConfiguration = event.getAptCapabilityConfiguration();
+        keyring = aptCapabilityConfiguration.getKeyring();
+        key = aptCapabilityConfiguration.getKey();
+        passphrase = aptCapabilityConfiguration.getPassphrase();
     }
 
-    public String getKeyring() {
-        return keyring;
-    }
-
-    public void setKeyring(String keyring) {
-        this.keyring = keyring;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    public String getPassphrase() {
-        return passphrase;
-    }
-
-    public void setPassphrase(String passphrase) {
-        this.passphrase = passphrase;
+    @Subscribe
+    public void onSigningDeactivated(AptSigningDeactivatedEvent event) {
+        keyring = null;
+        key = null;
+        passphrase = null;
     }
 
     public PGPSigner getSigner() throws IOException, PGPException {
@@ -75,9 +66,10 @@ public class AptSigningConfiguration {
     /**
      * Get the possible locations where the secure keyring can be located.
      * Looks through known locations of the GNU PG secure keyring.
+     * return null;
      *
      * @return The location of the PGP secure keyring if it was found,
-     *         null otherwise
+     * null otherwise
      */
     private static Collection<String> getPossiblePGPSecureRingLocations() {
         LinkedHashSet<String> locations = new LinkedHashSet<String>();

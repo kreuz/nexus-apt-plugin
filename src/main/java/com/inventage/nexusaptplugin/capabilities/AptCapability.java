@@ -6,19 +6,18 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.sonatype.nexus.capability.support.CapabilitySupport;
+import org.sonatype.sisu.goodies.eventbus.EventBus;
 
 import com.inventage.nexusaptplugin.sign.AptSigningConfiguration;
 
 @Named(AptCapabilityDescriptor.TYPE_ID)
-public class AptCapability
-        extends CapabilitySupport<AptCapabilityConfiguration> {
-    private final AptSigningConfiguration signingConfiguration;
+public class AptCapability extends CapabilitySupport<AptCapabilityConfiguration> {
 
-    private AptCapabilityConfiguration configuration;
+    private final EventBus eventBus;
 
     @Inject
-    public AptCapability(AptSigningConfiguration signingConfiguration) {
-        this.signingConfiguration = signingConfiguration;
+    public AptCapability(EventBus eventBus, AptSigningConfiguration aptSigningConfiguration) {
+        this.eventBus = eventBus;
     }
 
     @Override
@@ -27,30 +26,18 @@ public class AptCapability
     }
 
     @Override
-    protected void onCreate(AptCapabilityConfiguration config) {
-        configuration = config;
-    }
-
-    @Override
-    protected void onLoad(AptCapabilityConfiguration config) throws Exception {
-        configuration = config;
-    }
-
-    @Override
     protected void onUpdate(AptCapabilityConfiguration config) throws Exception {
-        configuration = config;
+        eventBus.post(new AptSigningUpdatedEvent(this, config));
     }
 
     @Override
-    protected void onRemove(AptCapabilityConfiguration config) throws Exception {
-        configuration = config;
+    public void onActivate(AptCapabilityConfiguration config) {
+        eventBus.post(new AptSigningActivatedEvent(this, config));
     }
 
     @Override
-    public void onActivate() {
-        signingConfiguration.setKeyring(configuration.getKeyring());
-        signingConfiguration.setKey(configuration.getKey());
-        signingConfiguration.setPassphrase(configuration.getPassphrase());
+    public void onPassivate(AptCapabilityConfiguration config) throws Exception {
+        eventBus.post(new AptSigningDeactivatedEvent(this));
     }
 
     @Override

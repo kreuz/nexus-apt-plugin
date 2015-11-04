@@ -2,7 +2,7 @@ package com.inventage.nexusaptplugin.cache.generators;
 
 import java.io.ByteArrayOutputStream;
 
-import javax.inject.Named;
+import javax.inject.Inject;
 
 import org.bouncycastle.bcpg.ArmoredOutputStream;
 import org.bouncycastle.bcpg.BCPGOutputStream;
@@ -13,12 +13,9 @@ import com.inventage.nexusaptplugin.cache.RepositoryData;
 import com.inventage.nexusaptplugin.sign.AptSigningConfiguration;
 import com.inventage.nexusaptplugin.sign.PGPSigner;
 
-import com.google.inject.Inject;
 
+public class SignKeyGenerator implements FileGenerator {
 
-@Named
-public class SignKeyGenerator
-        implements FileGenerator {
     private final AptSigningConfiguration configuration;
 
     @Inject
@@ -27,10 +24,10 @@ public class SignKeyGenerator
     }
 
     @Override
-    public byte[] generateFile(RepositoryData data)
-            throws Exception {
+    public byte[] generateFile(RepositoryData data) throws Exception {
         // Extract the key and return it
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
         PGPSigner signer = configuration.getSigner();
         PGPPublicKey publicKey = signer.getSecretKey().getPublicKey();
 

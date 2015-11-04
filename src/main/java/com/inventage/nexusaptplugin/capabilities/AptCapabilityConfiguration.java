@@ -29,9 +29,7 @@ public class AptCapabilityConfiguration {
     public static final String PASSPHRASE = "passphrase";
 
     private String keyring;
-
     private String key;
-
     private String passphrase;
 
     public AptCapabilityConfiguration() {

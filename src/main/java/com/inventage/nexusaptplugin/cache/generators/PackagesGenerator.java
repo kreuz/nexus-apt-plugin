@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.Map;
-import javax.inject.Named;
 
 import org.apache.lucene.search.Query;
 import org.apache.maven.index.ArtifactInfo;
@@ -22,7 +21,6 @@ import com.inventage.nexusaptplugin.cache.FileGenerator;
 import com.inventage.nexusaptplugin.cache.RepositoryData;
 
 
-@Named
 public class PackagesGenerator
         implements FileGenerator {
     /* Taken from http://www.debian.org/doc/manuals/debian-reference/ch02.en.html#_package_dependencies */

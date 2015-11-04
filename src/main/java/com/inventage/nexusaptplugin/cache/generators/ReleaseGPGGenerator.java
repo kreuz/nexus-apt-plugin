@@ -3,7 +3,6 @@ package com.inventage.nexusaptplugin.cache.generators;
 import java.io.ByteArrayOutputStream;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.bouncycastle.bcpg.ArmoredOutputStream;
 import org.bouncycastle.bcpg.BCPGOutputStream;
@@ -19,19 +18,16 @@ import com.inventage.nexusaptplugin.sign.AptSigningConfiguration;
 import com.inventage.nexusaptplugin.sign.PGPSigner;
 
 
-@Named
-public class ReleaseGPGGenerator
-        implements FileGenerator {
+public class ReleaseGPGGenerator implements FileGenerator {
+
     private final DebianFileManager fileManager;
-
-    private final AptSigningConfiguration signingConfiguration;
-
+    private final AptSigningConfiguration aptSigningConfiguration;
 
     @Inject
     public ReleaseGPGGenerator(DebianFileManager fileManager,
-                               AptSigningConfiguration signingConfiguration) {
+                               AptSigningConfiguration aptSigningConfiguration) {
         this.fileManager = fileManager;
-        this.signingConfiguration = signingConfiguration;
+        this.aptSigningConfiguration = aptSigningConfiguration;
     }
 
     @Override
@@ -43,7 +39,7 @@ public class ReleaseGPGGenerator
         // Get the key and sign the Release file
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-        PGPSigner signer = signingConfiguration.getSigner();
+        PGPSigner signer = this.aptSigningConfiguration.getSigner();
         PGPSignatureGenerator signatureGenerator = new PGPSignatureGenerator(new BcPGPContentSignerBuilder(signer.getSecretKey().getPublicKey().getAlgorithm(), PGPUtil.SHA1));
         signatureGenerator.init(PGPSignature.BINARY_DOCUMENT, signer.getPrivateKey());
 

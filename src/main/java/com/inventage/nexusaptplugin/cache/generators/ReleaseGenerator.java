@@ -8,7 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.apache.commons.codec.binary.Hex;
 
@@ -17,7 +16,6 @@ import com.inventage.nexusaptplugin.cache.FileGenerator;
 import com.inventage.nexusaptplugin.cache.RepositoryData;
 
 
-@Named
 public class ReleaseGenerator
         implements FileGenerator {
     /**

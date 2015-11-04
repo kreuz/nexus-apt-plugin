@@ -4,14 +4,12 @@ import java.io.ByteArrayOutputStream;
 import java.util.zip.GZIPOutputStream;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import com.inventage.nexusaptplugin.cache.DebianFileManager;
 import com.inventage.nexusaptplugin.cache.FileGenerator;
 import com.inventage.nexusaptplugin.cache.RepositoryData;
 
 
-@Named
 public class PackagesGzGenerator
         implements FileGenerator {
     private final DebianFileManager fileManager;
