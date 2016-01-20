@@ -14,6 +14,10 @@ import org.apache.commons.codec.binary.Hex;
 import com.inventage.nexusaptplugin.cache.DebianFileManager;
 import com.inventage.nexusaptplugin.cache.FileGenerator;
 import com.inventage.nexusaptplugin.cache.RepositoryData;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 
 public class ReleaseGenerator
@@ -65,6 +69,12 @@ public class ReleaseGenerator
         // Create Releases
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         OutputStreamWriter w = new OutputStreamWriter(baos);
+        
+        // write date to fix apt-get update on version 1.1.10 or newer
+        w.write("Date: ");
+        w.write(formatDate(new Date()));
+        w.write("\n");
+        
         for (Algorithm algorithm : Algorithm.values()) {
             try {
                 MessageDigest md = MessageDigest.getInstance(algorithm.name);
@@ -94,6 +104,12 @@ public class ReleaseGenerator
         w.close();
 
         return baos.toByteArray();
+    }
+    
+    private String formatDate(Date date) {
+        // RFC 2822 format
+        final DateFormat format = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z", Locale.ENGLISH); 
+        return format.format(date);
     }
 
     private static final class File {
