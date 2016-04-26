@@ -54,6 +54,9 @@ public class PackagesGenerator
                 continue;
             }
 
+            String sha256 = attrs.get(DEBIAN.SHA256.getFieldName());
+            String sha512 = attrs.get(DEBIAN.SHA512.getFieldName());
+
             // Verify that this is a valid artifact
             w.write("Package: " + attrs.get("Package") + "\n");
             w.write("Version: " + attrs.get("Version") + "\n");
@@ -68,6 +71,14 @@ public class PackagesGenerator
             w.write("Size: " + hit.size + "\n");
             w.write("MD5sum: " + hit.md5 + "\n");
             w.write("SHA1: " + hit.sha1 + "\n");
+
+            if(sha256 != null) {
+                w.write("SHA256: " + sha256 + "\n");
+            }
+            if(sha512 != null) {
+                w.write("SHA512: " + sha512 + "\n");
+            }
+
             w.write("Section: " + attrs.get("Section") + "\n");
             w.write("Priority: " + attrs.get("Priority") + "\n");
             w.write("Description: " + (attrs.get("Description") != null ? (attrs.get("Description").replace("\n", "\n ")) : "<no desc>") + "\n");

@@ -19,14 +19,17 @@ package com.inventage.nexusaptplugin;
  * under the License.
  */
 
-import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
+
 import javax.inject.Named;
 
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.maven.index.ArtifactContext;
@@ -35,9 +38,6 @@ import org.apache.maven.index.IndexerField;
 import org.apache.maven.index.IndexerFieldVersion;
 import org.apache.maven.index.creator.AbstractIndexCreator;
 import org.apache.maven.index.creator.MinimalArtifactInfoIndexCreator;
-import org.apache.maven.index.locator.Md5Locator;
-import org.codehaus.plexus.util.FileUtils;
-import org.codehaus.plexus.util.StringUtils;
 
 import com.inventage.nexusaptplugin.deb.DebControlParser;
 import com.inventage.nexusaptplugin.deb.GetControl;
@@ -115,12 +115,15 @@ public class DebianIndexCreator
     public static final IndexerField FILENAME = new IndexerField(DEBIAN.FILENAME, IndexerFieldVersion.V1, "deb_filename",
             DEBIAN.FILENAME.getDescription(), Field.Store.YES, Field.Index.NO);
 
+    public static final IndexerField SHA256 = new IndexerField(DEBIAN.SHA256, IndexerFieldVersion.V1, "deb_sha256",
+            DEBIAN.SHA256.getDescription(), Field.Store.YES, Field.Index.NO);
 
+    public static final IndexerField SHA512 = new IndexerField(DEBIAN.SHA512, IndexerFieldVersion.V1, "deb_sha512",
+            DEBIAN.SHA512.getDescription(), Field.Store.YES, Field.Index.NO);
 
-    private final Md5Locator md5Locator = new Md5Locator();
     private final List<IndexerField> indexerFields = Arrays.asList(PACKAGE, ARCHITECTURE, INSTALLED_SIZE, MAINTAINER, VERSION,
             DEPENDS, PRE_DEPENDS, PROVIDES, RECOMMENDS, SUGGESTS, ENHANCES, BREAKS, CONFLICTS, REPLACES,
-            SECTION, PRIORITY, DESCRIPTION, FILENAME);
+            SECTION, PRIORITY, DESCRIPTION, FILENAME, SHA256, SHA512);
 
     public DebianIndexCreator() {
         super(ID, Arrays.asList(MinimalArtifactInfoIndexCreator.ID));
@@ -132,14 +135,27 @@ public class DebianIndexCreator
             List<String> control = GetControl.doGet(ac.getArtifact());
             ac.getArtifactInfo().getAttributes().putAll(DebControlParser.parse(control));
             ac.getArtifactInfo().getAttributes().put("Filename", getRelativeFileNameOfArtifact(ac));
-            File md5 = md5Locator.locate(ac.getArtifact());
-            if (md5.exists()) {
-                try {
-                    ac.getArtifactInfo().md5 = StringUtils.chomp(FileUtils.fileRead(md5)).trim().split(" ")[0];
+
+            FileInputStream is = null;
+            try {
+                is = new FileInputStream(ac.getArtifact());
+                MessageDigest md5d = DigestUtils.getMd5Digest();
+                MessageDigest sha256 = DigestUtils.getSha256Digest();
+                MessageDigest sha512 = DigestUtils.getSha512Digest();
+
+                int count;
+                byte[] b = new byte[512];
+                while( (count = is.read(b)) >= 0) {
+                    md5d.update(b, 0, count);
+                    sha256.update(b, 0, count);
+                    sha512.update(b, 0, count);
                 }
-                catch (IOException e) {
-                    ac.addError(e);
-                }
+
+                ac.getArtifactInfo().md5 = Hex.encodeHexString(md5d.digest());
+                ac.getArtifactInfo().getAttributes().put(DEBIAN.SHA256.getFieldName(), Hex.encodeHexString(sha256.digest()));
+                ac.getArtifactInfo().getAttributes().put(DEBIAN.SHA512.getFieldName(), Hex.encodeHexString(sha512.digest()));
+            } finally {
+                is.close();
             }
         }
     }
@@ -147,7 +163,6 @@ public class DebianIndexCreator
     private String getRelativeFileNameOfArtifact(ArtifactContext ac) {
         return "./" + ac.getArtifactInfo().groupId.replace(".", "/") + "/" + ac.getArtifactInfo().artifactId + "/" + ac.getArtifactInfo().version + "/" + ac.getArtifactInfo().fname;
     }
-
 
     @Override
     public void updateDocument(ArtifactInfo ai, Document doc) {
@@ -192,7 +207,6 @@ public class DebianIndexCreator
     }
 
     public Collection<IndexerField> getIndexerFields() {
-        // it does not "add" any new field, it actually updates those already maintained by minimal creator.
-        return Collections.emptyList();
+        return Arrays.asList(SHA256, SHA512);
     }
 }

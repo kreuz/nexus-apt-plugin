@@ -33,4 +33,6 @@ public interface DEBIAN {
 
     Field MD5 = new Field( null, DEBIAN_NAMESPACE, "MD5sum", "MD5 checksum" );
     Field FILENAME = new Field( null, DEBIAN_NAMESPACE, "Filename", "Filename" );
+    Field SHA256 = new Field( null, DEBIAN_NAMESPACE, "sha256", "SHA256 checksum" );
+    Field SHA512 = new Field( null, DEBIAN_NAMESPACE, "sha512", "SHA512 checksum" );
 }
