@@ -11,7 +11,7 @@
 
     <groupId>com.inventage.nexus-apt-plugin</groupId>
     <artifactId>nexus-apt-plugin</artifactId>
-    <version>1.1.2-SNAPSHOT</version>
+    <version>1.1.2</version>
 
     <packaging>nexus-plugin</packaging>
 
@@ -20,7 +20,7 @@
     <scm>
         <connection>scm:git:https://github.com/inventage/nexus-apt-plugin.git</connection>
         <developerConnection>scm:git:https://github.com/inventage/nexus-apt-plugin.git</developerConnection>
-        <tag>master</tag>
+        <tag>nexus-apt-plugin-1.1.2</tag>
     </scm>
 
     <profiles>
