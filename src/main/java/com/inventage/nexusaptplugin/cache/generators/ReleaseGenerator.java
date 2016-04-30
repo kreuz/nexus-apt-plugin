@@ -19,6 +19,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 public class ReleaseGenerator
         implements FileGenerator {
@@ -28,7 +30,9 @@ public class ReleaseGenerator
     private static enum Algorithm {
         MD5("MD5Sum", "MD5"),
         SHA1("SHA1", "SHA1"),
-        SHA256("SHA256", "SHA256");
+        SHA256("SHA256", "SHA256"),
+        SHA384("SHA384", "SHA384"),
+        SHA512("SHA512", "SHA512");
 
         final String heading;
 
@@ -69,31 +73,41 @@ public class ReleaseGenerator
         // Create Releases
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         OutputStreamWriter w = new OutputStreamWriter(baos);
-        
+
         // write date to fix apt-get update on version 1.1.10 or newer
-        w.write("Date: ");
-        w.write(formatDate(new Date()));
-        w.write("\n");
-        
+        Date now = new Date();
+
+        // Compute Valid-Until date
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(now);
+        calendar.add(Calendar.DATE, 7);
+        Date nextWeek = new Date( calendar.getTime().getTime() );
+
+        String hdrfmt = new String("%s: %s\n");
+
+        w.write(String.format(hdrfmt, "Date", formatDate(now)) +
+                String.format(hdrfmt, "Valid-Until", formatDate(nextWeek)) +
+                String.format(hdrfmt, "Origin", "Nexus") +
+                String.format(hdrfmt, "Label", "Nexus") +
+                String.format(hdrfmt, "Suite", "testing") +
+                String.format(hdrfmt, "Codename", "stretch") +
+                String.format(hdrfmt, "Components", "main") +
+                String.format(hdrfmt, "Description", "Debian x.y Testing distribution - Not Released") +
+                String.format(hdrfmt, "Changelogs", "http://metadata.ftp-master.debian.org/changelogs/@CHANGEPATH@_changelog")
+                );
+
+        String hash_fmt = new String(" %s %" + maxSizeLength + "s %s\n");
+
         for (Algorithm algorithm : Algorithm.values()) {
             try {
                 MessageDigest md = MessageDigest.getInstance(algorithm.name);
-                w.write(algorithm.heading);
-                w.write(":\n");
+                w.write(algorithm.heading + ":\n");
 
                 for (File file : files) {
                     md.reset();
                     md.update(file.contents);
-                    byte[] digest = md.digest();
-                    w.write(" ");
-                    w.write(Hex.encodeHexString(digest));
-                    for (int i = 0; i <= maxSizeLength - file.size.length(); i++) {
-                        w.write(" ");
-                    }
-                    w.write(file.size);
-                    w.write(" ");
-                    w.write(file.name);
-                    w.write("\n");
+
+                    w.write(String.format(hash_fmt, Hex.encodeHexString(md.digest()), file.size, file.name));
                 }
             }
             catch (NoSuchAlgorithmException e) {
@@ -105,10 +119,10 @@ public class ReleaseGenerator
 
         return baos.toByteArray();
     }
-    
+
     private String formatDate(Date date) {
         // RFC 2822 format
-        final DateFormat format = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z", Locale.ENGLISH); 
+        final DateFormat format = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z", Locale.ENGLISH);
         return format.format(date);
     }
 
