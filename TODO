@@ -1,0 +1,51 @@
+* Document how to build this source, please
+
+* Depend on reprepro and generate index files using standard tools.
+
+* Address the following warnings and errors.
+
+- Nexus should manage its own repository signing keys, and therefore
+  there should be no situation where a Release file is not signed:
+
+  W: The repository 'http://nexus.fd.io/content/repositories/fd.io.debian.sid.main ./ Release' is not signed.
+
+* As many of the header fields of the Release file as possible should
+  be populated.  Correctly
+
+  W: Invalid 'Date' entry in Release file /var/lib/apt/lists/nexus.fd.io_content_repositories_fd.io.debian.sid.main_._Release
+
+* The sha* sums should be generated correctly:
+  Err:1 https://nexus.fd.io/content/repositories/fd.io.debian.sid.main ./ vpp-lib 1.0.0-348~gc843ddc-dirty  Hash Sum mismatch
+* Err:2 http://nexus.fd.io/content/repositories/fd.io.debian.sid.main ./ vpp 1.0.0-348~gc843ddc-dirty  Hash Sum mismatch
+* Err:2 https://nexus.fd.io/content/repositories/fd.io.debian.sid.main ./ vpp 1.0.0-348~gc843ddc-dirty  Hash Sum mismatch
+* E: Failed to fetch https://nexus.fd.io/content/repositories/fd.io.debian.sid.main/./io/fd/vpp/vpp-lib/0.9.5/vpp-lib-0.9.5.deb  Hash Sum mismatch
+* E: Failed to fetch https://nexus.fd.io/content/repositories/fd.io.debian.sid.main/./io/fd/vpp/vpp/0.9.5/vpp-0.9.5.deb  Hash Sum mismatch
+
+* File layout in root of repository must match (much of) this snapshot
+  from http://ftp.us.debian.org/debian/: <<EOF
+
+Index of /debian
+
+[ICO]         Name            Last modified   Size Description
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[DIR] Parent Directory                           -  
+[ ]   README                02-Apr-2016 07:17 1.0K  
+[ ]   README.CD-manufacture 26-Jun-2010 05:52 1.3K  
+[TXT] README.html           02-Apr-2016 07:17 2.5K  
+[TXT] README.mirrors.html   28-Apr-2016 21:52 178K  
+[TXT] README.mirrors.txt    28-Apr-2016 21:52  95K  
+[DIR] dists/                02-Apr-2016 07:18    -  
+[DIR] doc/                  09-May-2016 15:52    -  
+[ ]   extrafiles            09-May-2016 17:34  22K  
+[DIR] indices/              27-Jul-2015 04:09    -  
+[ ]   ls-lR.gz              09-May-2016 17:25  11M  
+[DIR] pool/                 19-Dec-2000 15:10    -  
+[DIR] project/              17-Nov-2008 18:05    -  
+[DIR] tools/                10-Oct-2012 12:29    -  
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Debian Archive
+
+See http://www.debian.org/ for information about Debian GNU/Linux.
+EOF
+
