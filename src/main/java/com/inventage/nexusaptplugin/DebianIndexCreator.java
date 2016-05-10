@@ -58,72 +58,175 @@ public class DebianIndexCreator
 
     public static final String ID = "debian-package";
 
-    public static final IndexerField PACKAGE = new IndexerField(DEBIAN.PACKAGE, IndexerFieldVersion.V1, "deb_package",
+    public static final IndexerField PACKAGE =
+      new IndexerField(DEBIAN.PACKAGE, IndexerFieldVersion.V1, "deb_package",
             DEBIAN.PACKAGE.getDescription(), Field.Store.YES, Field.Index.NO);
 
-    public static final IndexerField ARCHITECTURE = new IndexerField(DEBIAN.ARCHITECTURE, IndexerFieldVersion.V1, "deb_architecture",
-            DEBIAN.ARCHITECTURE.getDescription(), Field.Store.YES, Field.Index.NO);
+    public static final IndexerField ARCHITECTURE =
+      new IndexerField(DEBIAN.ARCHITECTURE,
+                       IndexerFieldVersion.V1,
+                       "deb_architecture",
+                       DEBIAN.ARCHITECTURE.getDescription(),
+                       Field.Store.YES,
+                       Field.Index.NO);
 
-    public static final IndexerField INSTALLED_SIZE = new IndexerField(DEBIAN.INSTALLED_SIZE, IndexerFieldVersion.V1, "deb_installed_size",
-            DEBIAN.INSTALLED_SIZE.getDescription(), Field.Store.YES, Field.Index.NO);
+    public static final IndexerField INSTALLED_SIZE =
+      new IndexerField(DEBIAN.INSTALLED_SIZE,
+                       IndexerFieldVersion.V1,
+                       "deb_installed_size",
+                       DEBIAN.INSTALLED_SIZE.getDescription(),
+                       Field.Store.YES,
+                       Field.Index.NO);
 
-    public static final IndexerField MAINTAINER = new IndexerField(DEBIAN.MAINTAINER, IndexerFieldVersion.V1, "deb_maintainer",
-            DEBIAN.MAINTAINER.getDescription(), Field.Store.YES, Field.Index.NO);
+    public static final IndexerField MAINTAINER =
+      new IndexerField(DEBIAN.MAINTAINER,
+                       IndexerFieldVersion.V1,
+                       "deb_maintainer",
+                       DEBIAN.MAINTAINER.getDescription(),
+                       Field.Store.YES,
+                       Field.Index.NO);
 
-    public static final IndexerField VERSION = new IndexerField(DEBIAN.VERSION, IndexerFieldVersion.V1, "deb_version",
-            DEBIAN.VERSION.getDescription(), Field.Store.YES, Field.Index.NO);
+    public static final IndexerField VERSION =
+      new IndexerField(DEBIAN.VERSION,
+                       IndexerFieldVersion.V1,
+                       "deb_version",
+                       DEBIAN.VERSION.getDescription(),
+                       Field.Store.YES,
+                       Field.Index.NO);
 
-    public static final IndexerField DEPENDS = new IndexerField(DEBIAN.DEPENDS, IndexerFieldVersion.V1, "deb_depends",
-            DEBIAN.DEPENDS.getDescription(), Field.Store.YES, Field.Index.NO);
+    public static final IndexerField DEPENDS =
+      new IndexerField(DEBIAN.DEPENDS,
+                       IndexerFieldVersion.V1,
+                       "deb_depends",
+                       DEBIAN.DEPENDS.getDescription(),
+                       Field.Store.YES,
+                       Field.Index.NO);
 
-    public static final IndexerField PRE_DEPENDS = new IndexerField(DEBIAN.PRE_DEPENDS, IndexerFieldVersion.V1, "deb_pre_depends",
-            DEBIAN.PRE_DEPENDS.getDescription(), Field.Store.YES, Field.Index.NO);
+    public static final IndexerField PRE_DEPENDS =
+      new IndexerField(DEBIAN.PRE_DEPENDS,
+                       IndexerFieldVersion.V1,
+                       "deb_pre_depends",
+                       DEBIAN.PRE_DEPENDS.getDescription(),
+                       Field.Store.YES,
+                       Field.Index.NO);
 
-    public static final IndexerField PROVIDES = new IndexerField(DEBIAN.PROVIDES, IndexerFieldVersion.V1, "deb_provides",
-            DEBIAN.PROVIDES.getDescription(), Field.Store.YES, Field.Index.NO);
+    public static final IndexerField PROVIDES =
+      new IndexerField(DEBIAN.PROVIDES,
+                       IndexerFieldVersion.V1,
+                       "deb_provides",
+                       DEBIAN.PROVIDES.getDescription(),
+                       Field.Store.YES,
+                       Field.Index.NO);
 
-    public static final IndexerField RECOMMENDS = new IndexerField(DEBIAN.RECOMMENDS, IndexerFieldVersion.V1, "deb_recommends",
-            DEBIAN.RECOMMENDS.getDescription(), Field.Store.YES, Field.Index.NO);
+    public static final IndexerField RECOMMENDS =
+      new IndexerField(DEBIAN.RECOMMENDS,
+                       IndexerFieldVersion.V1,
+                       "deb_recommends",
+                       DEBIAN.RECOMMENDS.getDescription(),
+                       Field.Store.YES,
+                       Field.Index.NO);
 
-    public static final IndexerField SUGGESTS = new IndexerField(DEBIAN.SUGGESTS, IndexerFieldVersion.V1, "deb_suggests",
-            DEBIAN.SUGGESTS.getDescription(), Field.Store.YES, Field.Index.NO);
+    public static final IndexerField SUGGESTS =
+      new IndexerField(DEBIAN.SUGGESTS,
+                       IndexerFieldVersion.V1,
+                       "deb_suggests",
+                       DEBIAN.SUGGESTS.getDescription(),
+                       Field.Store.YES,
+                       Field.Index.NO);
 
-    public static final IndexerField ENHANCES = new IndexerField(DEBIAN.ENHANCES, IndexerFieldVersion.V1, "deb_enhances",
-            DEBIAN.ENHANCES.getDescription(), Field.Store.YES, Field.Index.NO);
+    public static final IndexerField ENHANCES =
+      new IndexerField(DEBIAN.ENHANCES,
+                       IndexerFieldVersion.V1,
+                       "deb_enhances",
+                       DEBIAN.ENHANCES.getDescription(),
+                       Field.Store.YES,
+                       Field.Index.NO);
 
-    public static final IndexerField BREAKS = new IndexerField(DEBIAN.BREAKS, IndexerFieldVersion.V1, "deb_breaks",
-            DEBIAN.BREAKS.getDescription(), Field.Store.YES, Field.Index.NO);
+    public static final IndexerField BREAKS =
+      new IndexerField(DEBIAN.BREAKS,
+                       IndexerFieldVersion.V1,
+                       "deb_breaks",
+                       DEBIAN.BREAKS.getDescription(),
+                       Field.Store.YES,
+                       Field.Index.NO);
 
-    public static final IndexerField CONFLICTS = new IndexerField(DEBIAN.CONFLICTS, IndexerFieldVersion.V1, "deb_conflicts",
-            DEBIAN.CONFLICTS.getDescription(), Field.Store.YES, Field.Index.NO);
+    public static final IndexerField CONFLICTS =
+      new IndexerField(DEBIAN.CONFLICTS,
+                       IndexerFieldVersion.V1,
+                       "deb_conflicts",
+                       DEBIAN.CONFLICTS.getDescription(),
+                       Field.Store.YES,
+                       Field.Index.NO);
 
-    public static final IndexerField REPLACES = new IndexerField(DEBIAN.REPLACES, IndexerFieldVersion.V1, "deb_replaces",
-            DEBIAN.REPLACES.getDescription(), Field.Store.YES, Field.Index.NO);
+    public static final IndexerField REPLACES =
+      new IndexerField(DEBIAN.REPLACES,
+                       IndexerFieldVersion.V1,
+                       "deb_replaces",
+                       DEBIAN.REPLACES.getDescription(),
+                       Field.Store.YES,
+                       Field.Index.NO);
 
-    public static final IndexerField SECTION = new IndexerField(DEBIAN.SECTION, IndexerFieldVersion.V1, "deb_section",
-            DEBIAN.SECTION.getDescription(), Field.Store.YES, Field.Index.NO);
+    public static final IndexerField SECTION =
+      new IndexerField(DEBIAN.SECTION,
+                       IndexerFieldVersion.V1,
+                       "deb_section",
+                       DEBIAN.SECTION.getDescription(),
+                       Field.Store.YES,
+                       Field.Index.NO);
 
-    public static final IndexerField PRIORITY = new IndexerField(DEBIAN.PRIORITY, IndexerFieldVersion.V1, "deb_priority",
-            DEBIAN.PRIORITY.getDescription(), Field.Store.YES, Field.Index.NO);
+    public static final IndexerField PRIORITY =
+      new IndexerField(DEBIAN.PRIORITY,
+                       IndexerFieldVersion.V1,
+                       "deb_priority",
+                       DEBIAN.PRIORITY.getDescription(),
+                       Field.Store.YES,
+                       Field.Index.NO);
 
-    public static final IndexerField DESCRIPTION = new IndexerField(DEBIAN.DESCRIPTION, IndexerFieldVersion.V1, "deb_description",
-            DEBIAN.DESCRIPTION.getDescription(), Field.Store.YES, Field.Index.NO);
+    public static final IndexerField DESCRIPTION =
+      new IndexerField(DEBIAN.DESCRIPTION,
+                       IndexerFieldVersion.V1,
+                       "deb_description",
+                       DEBIAN.DESCRIPTION.getDescription(),
+                       Field.Store.YES,
+                       Field.Index.NO);
 
-    public static final IndexerField MD5 = new IndexerField(DEBIAN.MD5, IndexerFieldVersion.V1, "deb_md5",
-            DEBIAN.MD5.getDescription(), Field.Store.YES, Field.Index.NO);
+    public static final IndexerField MD5 =
+      new IndexerField(DEBIAN.MD5,
+                       IndexerFieldVersion.V1,
+                       "deb_md5",
+                       DEBIAN.MD5.getDescription(),
+                       Field.Store.YES,
+                       Field.Index.NO);
 
-    public static final IndexerField FILENAME = new IndexerField(DEBIAN.FILENAME, IndexerFieldVersion.V1, "deb_filename",
-            DEBIAN.FILENAME.getDescription(), Field.Store.YES, Field.Index.NO);
+    public static final IndexerField FILENAME =
+      new IndexerField(DEBIAN.FILENAME,
+                       IndexerFieldVersion.V1,
+                       "deb_filename",
+                       DEBIAN.FILENAME.getDescription(),
+                       Field.Store.YES,
+                       Field.Index.NO);
 
-    public static final IndexerField SHA256 = new IndexerField(DEBIAN.SHA256, IndexerFieldVersion.V1, "deb_sha256",
-            DEBIAN.SHA256.getDescription(), Field.Store.YES, Field.Index.NO);
+    public static final IndexerField SHA256 =
+      new IndexerField(DEBIAN.SHA256,
+                       IndexerFieldVersion.V1,
+                       "deb_sha256",
+                       DEBIAN.SHA256.getDescription(),
+                       Field.Store.YES,
+                       Field.Index.NO);
 
-    public static final IndexerField SHA512 = new IndexerField(DEBIAN.SHA512, IndexerFieldVersion.V1, "deb_sha512",
-            DEBIAN.SHA512.getDescription(), Field.Store.YES, Field.Index.NO);
+    public static final IndexerField SHA512 =
+      new IndexerField(DEBIAN.SHA512,
+                       IndexerFieldVersion.V1,
+                       "deb_sha512",
+                       DEBIAN.SHA512.getDescription(),
+                       Field.Store.YES,
+                       Field.Index.NO);
 
-    private final List<IndexerField> indexerFields = Arrays.asList(PACKAGE, ARCHITECTURE, INSTALLED_SIZE, MAINTAINER, VERSION,
-            DEPENDS, PRE_DEPENDS, PROVIDES, RECOMMENDS, SUGGESTS, ENHANCES, BREAKS, CONFLICTS, REPLACES,
-            SECTION, PRIORITY, DESCRIPTION, FILENAME, SHA256, SHA512);
+    private final List<IndexerField> indexerFields =
+      Arrays.asList(PACKAGE, ARCHITECTURE, INSTALLED_SIZE, MAINTAINER, VERSION,
+                    DEPENDS, PRE_DEPENDS, PROVIDES, RECOMMENDS, SUGGESTS,
+                    ENHANCES, BREAKS, CONFLICTS, REPLACES, SECTION, PRIORITY,
+                    DESCRIPTION, FILENAME, SHA256, SHA512);
 
     public DebianIndexCreator() {
         super(ID, Arrays.asList(MinimalArtifactInfoIndexCreator.ID));
