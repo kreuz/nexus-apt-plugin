@@ -1,5 +1,7 @@
 package com.inventage.nexusaptplugin;
 
+import java.io.File;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -25,6 +27,7 @@ import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Named;
 
@@ -234,39 +237,75 @@ public class DebianIndexCreator
 
     @Override
     public void populateArtifactInfo(ArtifactContext ac) throws IOException {
-        if (ac.getArtifact() != null && "deb".equals(ac.getArtifactInfo().packaging)) {
-            List<String> control = GetControl.doGet(ac.getArtifact());
-            ac.getArtifactInfo().getAttributes().putAll(DebControlParser.parse(control));
-            ac.getArtifactInfo().getAttributes().put("Filename", getRelativeFileNameOfArtifact(ac));
-
-            FileInputStream is = null;
-            try {
-                is = new FileInputStream(ac.getArtifact());
-                MessageDigest md5d = DigestUtils.getMd5Digest();
-                MessageDigest sha256 = DigestUtils.getSha256Digest();
-                MessageDigest sha512 = DigestUtils.getSha512Digest();
-
-                int count;
-                byte[] b = new byte[512];
-                while( (count = is.read(b)) >= 0) {
-                    md5d.update(b, 0, count);
-                    sha256.update(b, 0, count);
-                    sha512.update(b, 0, count);
-                }
-
-                ac.getArtifactInfo().md5 = Hex.encodeHexString(md5d.digest());
-                ac.getArtifactInfo().getAttributes().put(DEBIAN.SHA256.getFieldName(), Hex.encodeHexString(sha256.digest()));
-                ac.getArtifactInfo().getAttributes().put(DEBIAN.SHA512.getFieldName(), Hex.encodeHexString(sha512.digest()));
-            } finally {
-                is.close();
-            }
+        File artifact = ac.getArtifact();
+        if (artifact == null){
+          // TODO: Throw an exception?
+          return;
         }
+        ArtifactInfo info = ac.getArtifactInfo();
+        if( ! "deb".equals(info.packaging) ) {
+          // TODO: Throw an exception?
+          return;
+        }
+
+        Map<String,String> artifact_attr = info.getAttributes();
+
+        List<String> control = GetControl.doGet(artifact);
+
+        Map<String,String> debControlMap = DebControlParser.parse(control);
+
+        artifact_attr.putAll(debControlMap);
+        artifact_attr.put("Filename", getRelativeFileNameOfArtifact(ac));
+
+        MessageDigest md5d   = DigestUtils.getMd5Digest();
+        MessageDigest sha256 = DigestUtils.getSha256Digest();
+        MessageDigest sha512 = DigestUtils.getSha512Digest();
+
+        int count;
+        byte[] b = new byte[512];
+        FileInputStream is = new FileInputStream(artifact);
+        try{
+          while( (count = is.read(b)) >= 0) {
+            md5d.update(b, 0, count);
+            sha256.update(b, 0, count);
+            sha512.update(b, 0, count);
+          }
+        }catch(Exception e){
+          // TODO: re-throw the exception?
+          is.close();
+        }finally{
+          is.close();
+        }
+
+        info.md5 = Hex.encodeHexString(md5d.digest());
+        artifact_attr.put(DEBIAN.SHA256.getFieldName(),
+                          Hex.encodeHexString(sha256.digest()));
+        artifact_attr.put(DEBIAN.SHA512.getFieldName(),
+                          Hex.encodeHexString(sha512.digest()));
+
     }
 
     private String getRelativeFileNameOfArtifact(ArtifactContext ac) {
-        return "./" + ac.getArtifactInfo().groupId.replace(".", "/") + "/" + ac.getArtifactInfo().artifactId + "/" + ac.getArtifactInfo().version + "/" + ac.getArtifactInfo().fname;
+      /* TODO: this should be something like the following:
+$ apt-cache show selinux-utils | grep 'File'
+Filename: pool/main/libs/libselinux/selinux-utils_2.5-2_amd64.deb
+       */
+    	ArtifactInfo info = ac.getArtifactInfo();
+        return "./" +
+          info.groupId.replace(".", "/") + "/" +
+          info.artifactId + "/" +
+          info.version + "/" +
+          info.fname;
+
     }
 
+    /**
+     * Updates a document with information from artifact
+     *
+     * @param  ai  a map of artifact info
+     * @param  doc the document to update
+     * @return     nothing it seems
+     */
     @Override
     public void updateDocument(ArtifactInfo ai, Document doc) {
         if ("deb".equals(ai.packaging)) {
@@ -279,27 +318,63 @@ public class DebianIndexCreator
         }
     }
 
-    private void updateOneDocumentField(ArtifactInfo ai, Document doc, IndexerField indexerField) {
-        if (ai.getAttributes().get(indexerField.getOntology().getFieldName()) != null) {
-            doc.add(indexerField.toField(ai.getAttributes().get(indexerField.getOntology().getFieldName())));
+    /**
+
+     * Updates field **indexerField** of document **doc** for artifact
+     * info **ai**
+
+     *
+     * @param  ai           a map of artifact info
+     * @param  doc          the document to update
+     * @param  indexerField the field to update
+     * @return     nothing again it seems
+     */
+    private void updateOneDocumentField(ArtifactInfo ai,
+                                        Document doc,
+                                        IndexerField indexerField) {
+        String fieldName = indexerField.getOntology().getFieldName();
+        String fieldVal  = ai.getAttributes().get(fieldName);
+        if ( fieldVal == null ){
+          // TODO: throw exception?
+          return;
         }
+        Field field = indexerField.toField(fieldVal);
+        doc.add(field);
     }
 
     @Override
     public boolean updateArtifactInfo(Document doc, ArtifactInfo ai) {
         String filename = doc.get(FILENAME.getKey());
-        if (filename != null && filename.endsWith(".deb")) {
-            for (IndexerField indexerField : indexerFields) {
-                updateOneArtifactInfoAttribute(doc, ai, indexerField);
-            }
-            ai.md5 = doc.get(MD5.getKey());
-            return true;
+        if ( filename == null ){
+          // TODO: throw an exception?
+          return false;
         }
-        return false;
+        if ( ! filename.endsWith(".deb")) {
+          // TODO: throw an exception?
+          return false;
+        }
+
+        for (IndexerField indexerField : indexerFields) {
+          try { 
+            updateOneArtifactInfoAttribute(doc, ai, indexerField);
+          }catch(Exception e){
+            // TODO: rethrow?
+            return false;
+          }
+        }
+        ai.md5 = doc.get(MD5.getKey());
+        // TODO: sha1? sha256?  sha384?  sha512?
+        return true;
     }
 
-    private void updateOneArtifactInfoAttribute(Document doc, ArtifactInfo ai, IndexerField indexerField) {
-        ai.getAttributes().put(indexerField.getOntology().getFieldName(), doc.get(indexerField.getKey()));
+    private void updateOneArtifactInfoAttribute(Document doc,
+                                                ArtifactInfo ai,
+                                                IndexerField indexerField) {
+
+        String fieldName = indexerField.getOntology().getFieldName();
+        String docKey = indexerField.getKey();
+
+        ai.getAttributes().put(fieldName, doc.get(docKey));
     }
 
     // ==
