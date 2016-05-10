@@ -65,7 +65,8 @@ public class AptCapabilityDescriptor
         return "APT plugin configuration.";
     }
 
-    @Override
+    @SuppressWarnings("rawtypes")
+	@Override
     public List<FormField> formFields() {
         return Arrays.<FormField>asList(
                 new StringTextFormField(

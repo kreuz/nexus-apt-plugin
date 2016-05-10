@@ -18,7 +18,6 @@ public class GetControlTest {
     @Test
     public void test() throws IOException, ArchiveException {
         File deb = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getFile(), "php5_5.3.10-1ubuntu3.2_all.deb");
-        GetControl getControl = new GetControl();
-        System.err.println( getControl.doGet(deb));
+        System.err.println( GetControl.doGet(deb));
     }
 }

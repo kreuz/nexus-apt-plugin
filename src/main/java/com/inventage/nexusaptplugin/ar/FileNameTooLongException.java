@@ -29,4 +29,9 @@ package com.inventage.nexusaptplugin.ar;
  */
 public class FileNameTooLongException
         extends RuntimeException {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 }

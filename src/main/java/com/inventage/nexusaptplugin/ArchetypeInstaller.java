@@ -166,7 +166,6 @@ public class ArchetypeInstaller implements EventSubscriber {
     private void removeArcheTypeCatalogIfPresent(Repository repository, ArchetypeCatalog archetypeCatalog) {
         for (Map.Entry<String, String> entry : archetypeCatalog.getCatalogFiles().entrySet()) {
             final String filePath = entry.getKey();
-            final String generatorId = entry.getValue();
             final ResourceStoreRequest request = new ResourceStoreRequest(filePath);
             try {
                 repository.deleteItem(request);
