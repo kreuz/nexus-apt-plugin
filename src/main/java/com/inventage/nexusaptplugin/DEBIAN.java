@@ -5,7 +5,7 @@ import org.apache.maven.index.Field;
 /**
  * Created with IntelliJ IDEA.
  * User: sannies
- * Date: 6/30/12
+ * Date: 20120630
  * Time: 12:26 PM
  * To change this template use File | Settings | File Templates.
  */
