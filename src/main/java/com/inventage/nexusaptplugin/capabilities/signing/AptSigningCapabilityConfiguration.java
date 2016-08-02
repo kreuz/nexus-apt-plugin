@@ -10,64 +10,54 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
-package com.inventage.nexusaptplugin.capabilities;
+package com.inventage.nexusaptplugin.capabilities.signing;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
- * Configuration adapter for {@link AptCapability}.
+ * Configuration adapter for {@link AptSigningCapability}.
  *
  * @since 3.0
  */
-public class AptCapabilityConfiguration {
+public class AptSigningCapabilityConfiguration {
 
     public static final String KEYRING = "keyring";
-
     public static final String KEY = "key";
-
     public static final String PASSPHRASE = "passphrase";
 
-    private String keyring;
-    private String key;
-    private String passphrase;
+    private final String keyring;
+    private final String key;
+    private final String passphrase;
 
-    public AptCapabilityConfiguration() {
-        this(null, null, null);
+    public AptSigningCapabilityConfiguration() {
+        this(new HashMap<String, String>());
     }
 
-    public AptCapabilityConfiguration(String keyring, String key, String passphrase) {
-        this.keyring = keyring == null ? "" : keyring;
-        this.key = key == null ? "" : key;
-        this.passphrase = passphrase == null ? "" : passphrase;
+    public AptSigningCapabilityConfiguration(final Map<String, String> properties) {
+        this.keyring = getOrDefault(properties, KEYRING, "");
+        this.key = getOrDefault(properties, KEY, "");
+        this.passphrase = getOrDefault(properties, PASSPHRASE, "");
     }
 
-    public AptCapabilityConfiguration(final Map<String, String> properties) {
-        this(properties.get(KEYRING), properties.get(KEY), properties.get(PASSPHRASE));
+    @NotNull
+    private String getOrDefault(Map<String, String> properties, String key, String defaultValue) {
+        String value = properties.get(key);
+        return value == null ? defaultValue : value;
     }
 
     public String getKeyring() {
         return keyring;
     }
 
-    public void setKeyring(String keyring) {
-        this.keyring = keyring;
-    }
-
     public String getKey() {
         return key;
     }
 
-    public void setKey(String key) {
-        this.key = key;
-    }
-
     public String getPassphrase() {
         return passphrase;
-    }
-
-    public void setPassphrase(String passphrase) {
-        this.passphrase = passphrase;
     }
 
     public Map<String, String> asMap() {

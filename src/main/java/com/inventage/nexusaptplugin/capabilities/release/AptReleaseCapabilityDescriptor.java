@@ -10,9 +10,7 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
-package com.inventage.nexusaptplugin.capabilities;
-
-import static org.sonatype.nexus.plugins.capabilities.CapabilityType.capabilityType;
+package com.inventage.nexusaptplugin.capabilities.release;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,30 +32,33 @@ import org.sonatype.nexus.plugins.capabilities.support.validator.Validators;
  * @since 3.0
  */
 @Singleton
-@Named(AptCapabilityDescriptor.TYPE_ID)
-public class AptCapabilityDescriptor
+@Named(AptReleaseCapability.TYPE_ID)
+public class AptReleaseCapabilityDescriptor
         extends CapabilityDescriptorSupport
         implements CapabilityDescriptor {
 
-    public static final String TYPE_ID = "apt";
-
-    public static final CapabilityType TYPE = capabilityType(TYPE_ID);
+    public static final String DESCRIPTION = "description";
+    public static final String ORIGIN = "origin";
+    public static final String LABEL = "label";
+    public static final String SUITE = "suite";
+    public static final String CODENAME = "codename";
+    public static final String VALID_UNTIL_DURATION = "validUntilDuration";
 
     private final Validators validators;
 
     @Inject
-    public AptCapabilityDescriptor(final Validators validators) {
+    public AptReleaseCapabilityDescriptor(final Validators validators) {
         this.validators = validators;
     }
 
     @Override
     public CapabilityType type() {
-        return TYPE;
+        return AptReleaseCapability.TYPE;
     }
 
     @Override
     public String name() {
-        return "APT: Configuration";
+        return "APT: Releases file configuration";
     }
 
     @Override
@@ -65,42 +66,55 @@ public class AptCapabilityDescriptor
         return "APT plugin configuration.";
     }
 
-    @SuppressWarnings("rawtypes")
-	@Override
+    @Override
     public List<FormField> formFields() {
         return Arrays.<FormField>asList(
                 new StringTextFormField(
-                        AptCapabilityConfiguration.KEYRING,
-                        "Secure keyring location",
-                        "The location of the GNU PG secure keyring to be used for signing",
+                        DESCRIPTION,
+                        "Description",
+                        "The value of the \"Description\" field in the Releases file",
                         FormField.OPTIONAL
                 ),
                 new StringTextFormField(
-                        AptCapabilityConfiguration.KEY,
-                        "Key ID",
-                        "ID of the key in the secure keyring to be used for signing",
-                        FormField.MANDATORY
+                        ORIGIN,
+                        "Origin",
+                        "The value of the \"Origin\" field in the Releases file",
+                        FormField.OPTIONAL
                 ),
                 new StringTextFormField(
-                        AptCapabilityConfiguration.PASSPHRASE,
-                        "Passphrase for the key",
-                        "Passphrase for the key to be used for signing",
-                        FormField.MANDATORY
+                        LABEL,
+                        "Label",
+                        "The value of the \"Label\" field in the Releases file",
+                        FormField.OPTIONAL
+                ),
+                new StringTextFormField(
+                        SUITE,
+                        "Suite",
+                        "The value of the \"Suite\" field in the Releases file",
+                        FormField.OPTIONAL
+                ),
+                new StringTextFormField(
+                        CODENAME,
+                        "Codename",
+                        "The value of the \"Codename\" field in the Releases file",
+                        FormField.OPTIONAL
+                ),
+                new StringTextFormField(
+                        VALID_UNTIL_DURATION,
+                        "Valid-Until Duration",
+                        "The duration used to calculate the \"Valid-Until\" field in the Releases file",
+                        FormField.OPTIONAL
                 ));
     }
 
     @Override
     public Validator validator() {
-        return validators.logical().and(
-                validators.capability().uniquePer(TYPE)
-        );
+        return validators.capability().uniquePer(AptReleaseCapability.TYPE);
     }
 
     @Override
     public Validator validator(final CapabilityIdentity id) {
-        return validators.logical().and(
-                validators.capability().uniquePerExcluding(id, TYPE)
-        );
+        return validators.capability().uniquePerExcluding(id, AptReleaseCapability.TYPE);
     }
 
 }

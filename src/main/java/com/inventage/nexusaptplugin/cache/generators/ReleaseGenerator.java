@@ -1,14 +1,10 @@
 package com.inventage.nexusaptplugin.cache.generators;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -16,10 +12,18 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+import com.google.common.eventbus.Subscribe;
 
 import com.inventage.nexusaptplugin.cache.DebianFileManager;
 import com.inventage.nexusaptplugin.cache.FileGenerator;
 import com.inventage.nexusaptplugin.cache.RepositoryData;
+import com.inventage.nexusaptplugin.capabilities.release.AptReleaseCapabilityConfiguration;
+import com.inventage.nexusaptplugin.capabilities.release.AptReleaseCapabilityEvent;
 
 public class ReleaseGenerator
         implements FileGenerator {
@@ -46,10 +50,18 @@ public class ReleaseGenerator
     private final String[] FILES = new String[]{"Packages", "Packages.gz"};
 
     private final DebianFileManager fileManager;
+    private final AptReleaseConfiguration aptReleaseConfiguration;
 
     @Inject
-    public ReleaseGenerator(DebianFileManager fileManager) {
+    public ReleaseGenerator(DebianFileManager fileManager, AptReleaseConfiguration aptReleaseConfiguration) {
         this.fileManager = fileManager;
+        this.aptReleaseConfiguration = aptReleaseConfiguration;
+    }
+
+    @Subscribe
+    public void onCapabilityUpdated(AptReleaseCapabilityEvent event) {
+        final AptReleaseCapabilityConfiguration aptReleaseCapabilityConfiguration =
+                event.getAptReleaseCapabilityConfiguration();
     }
 
     @Override
@@ -74,26 +86,19 @@ public class ReleaseGenerator
         OutputStreamWriter w = new OutputStreamWriter(baos);
 
         // write date to fix apt-get update on version 1.1.10 or newer
-        Date now = new Date();
+        DateTime now = DateTime.now();
 
-        // Compute Valid-Until date
-        GregorianCalendar calendar = new GregorianCalendar();
-        calendar.setTime(now);
-        calendar.add(Calendar.DATE, 7);
-        Date nextWeek = new Date( calendar.getTime().getTime() );
-
-        String hdrfmt = "%s: %s\n";
-
-        w.write(String.format(hdrfmt, "Date", formatDate(now)));
-
-        w.write(String.format(hdrfmt, "Components", "main"));
-
-        w.write(String.format(hdrfmt, "Description", "Debian x.y Testing distribution - Not Released"));
-        w.write(String.format(hdrfmt, "Origin", "Nexus"));
-        w.write(String.format(hdrfmt, "Label", "Nexus"));
-        w.write(String.format(hdrfmt, "Suite", "testing"));
-        w.write(String.format(hdrfmt, "Codename", "stretch"));
-        w.write(String.format(hdrfmt, "Valid-Until", formatDate(nextWeek)));
+        writeHeader(w, "Date", formatDate(now));
+        writeHeader(w, "Components", "main");
+        writeOptionalHeader(w, "Description", aptReleaseConfiguration.getDescription());
+        writeOptionalHeader(w, "Origin", aptReleaseConfiguration.getOrigin());
+        writeOptionalHeader(w, "Label", aptReleaseConfiguration.getLabel());
+        writeOptionalHeader(w, "Suite", aptReleaseConfiguration.getSuite());
+        writeOptionalHeader(w, "Codename", aptReleaseConfiguration.getCodename());
+        final DateTime validUntil = aptReleaseConfiguration.getValidUntil(now);
+        if (validUntil != null) {
+            writeHeader(w, "Valid-Until", formatDate(validUntil));
+        }
 
         String hash_fmt = " %s %" + maxSizeLength + "s %s\n";
         for (Algorithm algorithm : Algorithm.values()) {
@@ -118,10 +123,25 @@ public class ReleaseGenerator
         return baos.toByteArray();
     }
 
-    private String formatDate(Date date) {
+    private void writeOptionalHeader(OutputStreamWriter w, String key, String value) throws IOException {
+        if (StringUtils.isNotBlank(value)) {
+            writeHeader(w, key, value);
+        }
+    }
+
+    private void writeHeader(OutputStreamWriter w, String key, String value) throws IOException {
+        String hdrfmt = "%s: %s";
+        w.write(String.format(hdrfmt, key, value));
+        w.write('\n');
+    }
+
+    private String formatDate(DateTime dateNew) {
         // RFC 2822 format
-        final DateFormat format = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z", Locale.ENGLISH);
-        return format.format(date);
+        final DateTimeFormatter dateTimeFormatter =
+                DateTimeFormat
+                        .forPattern("EEE, d MMM yyyy HH:mm:ss Z")
+                        .withLocale(Locale.ENGLISH);
+        return dateTimeFormatter.print(dateNew);
     }
 
     private static final class File {

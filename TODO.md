@@ -9,11 +9,6 @@
 
   W: The repository 'http://nexus.fd.io/content/repositories/fd.io.debian.sid.main ./ Release' is not signed.
 
-* As many of the header fields of the Release file as possible should
-  be populated.  Correctly
-
-  W: Invalid 'Date' entry in Release file /var/lib/apt/lists/nexus.fd.io_content_repositories_fd.io.debian.sid.main_._Release
-
 * The sha* sums should be generated correctly:
   Err:1 https://nexus.fd.io/content/repositories/fd.io.debian.sid.main ./ vpp-lib 1.0.0-348~gc843ddc-dirty  Hash Sum mismatch
 * Err:2 http://nexus.fd.io/content/repositories/fd.io.debian.sid.main ./ vpp 1.0.0-348~gc843ddc-dirty  Hash Sum mismatch

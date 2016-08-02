@@ -16,9 +16,9 @@ import org.sonatype.nexus.events.EventSubscriber;
 
 import com.google.common.eventbus.Subscribe;
 
-import com.inventage.nexusaptplugin.capabilities.AptCapabilityConfiguration;
-import com.inventage.nexusaptplugin.capabilities.AptSigningDeactivatedEvent;
-import com.inventage.nexusaptplugin.capabilities.AptSigningUpdatedEvent;
+import com.inventage.nexusaptplugin.capabilities.signing.AptSigningCapabilityConfiguration;
+import com.inventage.nexusaptplugin.capabilities.signing.AptSigningCapabilityDeactivatedEvent;
+import com.inventage.nexusaptplugin.capabilities.signing.AptSigningCapabilityUpdatedEvent;
 
 @Named
 @Singleton
@@ -29,15 +29,15 @@ public class AptSigningConfiguration implements EventSubscriber {
     private String passphrase;
 
     @Subscribe
-    public void onSigningUpdated(AptSigningUpdatedEvent event) {
-        final AptCapabilityConfiguration aptCapabilityConfiguration = event.getAptCapabilityConfiguration();
-        keyring = aptCapabilityConfiguration.getKeyring();
-        key = aptCapabilityConfiguration.getKey();
-        passphrase = aptCapabilityConfiguration.getPassphrase();
+    public void onCapabilityUpdated(AptSigningCapabilityUpdatedEvent event) {
+        final AptSigningCapabilityConfiguration aptSigningCapabilityConfiguration = event.getAptSigningCapabilityConfiguration();
+        keyring = aptSigningCapabilityConfiguration.getKeyring();
+        key = aptSigningCapabilityConfiguration.getKey();
+        passphrase = aptSigningCapabilityConfiguration.getPassphrase();
     }
 
     @Subscribe
-    public void onSigningDeactivated(AptSigningDeactivatedEvent event) {
+    public void onCapabilityDeactivated(AptSigningCapabilityDeactivatedEvent event) {
         keyring = null;
         key = null;
         passphrase = null;
