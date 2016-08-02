@@ -4,8 +4,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -14,13 +20,6 @@ import org.apache.commons.codec.binary.Hex;
 import com.inventage.nexusaptplugin.cache.DebianFileManager;
 import com.inventage.nexusaptplugin.cache.FileGenerator;
 import com.inventage.nexusaptplugin.cache.RepositoryData;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 public class ReleaseGenerator
         implements FileGenerator {
@@ -83,21 +82,20 @@ public class ReleaseGenerator
         calendar.add(Calendar.DATE, 7);
         Date nextWeek = new Date( calendar.getTime().getTime() );
 
-        String hdrfmt = new String("%s: %s\n");
+        String hdrfmt = "%s: %s\n";
 
-        w.write(String.format(hdrfmt, "Date", formatDate(now)) +
-                String.format(hdrfmt, "Valid-Until", formatDate(nextWeek)) +
-                String.format(hdrfmt, "Origin", "Nexus") +
-                String.format(hdrfmt, "Label", "Nexus") +
-                String.format(hdrfmt, "Suite", "testing") +
-                String.format(hdrfmt, "Codename", "stretch") +
-                String.format(hdrfmt, "Components", "main") +
-                String.format(hdrfmt, "Description", "Debian x.y Testing distribution - Not Released") +
-                String.format(hdrfmt, "Changelogs", "http://metadata.ftp-master.debian.org/changelogs/@CHANGEPATH@_changelog")
-                );
+        w.write(String.format(hdrfmt, "Date", formatDate(now)));
 
-        String hash_fmt = new String(" %s %" + maxSizeLength + "s %s\n");
+        w.write(String.format(hdrfmt, "Components", "main"));
 
+        w.write(String.format(hdrfmt, "Description", "Debian x.y Testing distribution - Not Released"));
+        w.write(String.format(hdrfmt, "Origin", "Nexus"));
+        w.write(String.format(hdrfmt, "Label", "Nexus"));
+        w.write(String.format(hdrfmt, "Suite", "testing"));
+        w.write(String.format(hdrfmt, "Codename", "stretch"));
+        w.write(String.format(hdrfmt, "Valid-Until", formatDate(nextWeek)));
+
+        String hash_fmt = " %s %" + maxSizeLength + "s %s\n";
         for (Algorithm algorithm : Algorithm.values()) {
             try {
                 MessageDigest md = MessageDigest.getInstance(algorithm.name);

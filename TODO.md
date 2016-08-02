@@ -22,8 +22,9 @@
 * E: Failed to fetch https://nexus.fd.io/content/repositories/fd.io.debian.sid.main/./io/fd/vpp/vpp/0.9.5/vpp-0.9.5.deb  Hash Sum mismatch
 
 * File layout in root of repository must match (much of) this snapshot
-  from http://ftp.us.debian.org/debian/: <<EOF
+  from http://ftp.us.debian.org/debian/:
 
+```
 Index of /debian
 
 [ICO]         Name            Last modified   Size Description
@@ -47,5 +48,34 @@ Index of /debian
 Debian Archive
 
 See http://www.debian.org/ for information about Debian GNU/Linux.
-EOF
+```
 
+* The filenames and paths do not comply with DFSG standards and
+therefore cannot be indexed with the standard distribution.  Please
+change the output filename to meet the standard naming convention (-cjac).
+
+Here are some examples of DFSG compliant .deb filenames:
+```
+pinentry-curses_0.9.7-5_amd64.deb
+policycoreutils_2.5-1_amd64.deb
+policycoreutils-python-utils_2.5-1_amd64.deb
+pwgen_2.07-1.1_amd64.deb
+python3-selinux_2.5-1_amd64.deb
+python-audit_1%3a2.4.5-1+b1_amd64.deb
+python-ipy_1%3a0.83-1_all.deb
+python-selinux_2.5-1_amd64.deb
+python-semanage_2.5-1_amd64.deb
+python-sepolgen_1.2.3-1_all.deb
+python-sepolicy_2.5-1_amd64.deb
+python-setools_3.3.8+20151215-3_amd64.deb
+rake_10.5.0-2_all.deb
+ruby_1%3a2.3.0+4_amd64.deb
+ruby2.3_2.3.1-1_amd64.deb
+ruby-selinux_2.5-1_amd64.deb
+selinux-basics_0.5.4_all.deb
+setools_3.3.8+20151215-3_amd64.deb
+shorewall_5.0.7.2-1_all.deb
+shorewall6_5.0.7.2-1_all.deb
+shorewall-core_5.0.7.2-1_all.deb
+sshfs_2.5-1_amd64.deb
+```

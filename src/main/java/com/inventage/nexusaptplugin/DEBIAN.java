@@ -3,11 +3,7 @@ package com.inventage.nexusaptplugin;
 import org.apache.maven.index.Field;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sannies
- * Date: 20120630
- * Time: 12:26 PM
- * To change this template use File | Settings | File Templates.
+ * Index field descriptions of Debian package attributes.
  */
 public interface DEBIAN {
 

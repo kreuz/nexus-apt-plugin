@@ -1,26 +1,6 @@
 package com.inventage.nexusaptplugin;
 
 import java.io.File;
-
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0    
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -29,7 +9,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -41,9 +23,29 @@ import org.apache.maven.index.IndexerField;
 import org.apache.maven.index.IndexerFieldVersion;
 import org.apache.maven.index.creator.AbstractIndexCreator;
 import org.apache.maven.index.creator.MinimalArtifactInfoIndexCreator;
+import org.slf4j.Logger;
 
 import com.inventage.nexusaptplugin.deb.DebControlParser;
 import com.inventage.nexusaptplugin.deb.GetControl;
+
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 
 /**
@@ -55,7 +57,7 @@ import com.inventage.nexusaptplugin.deb.GetControl;
  * @author cstamas
  */
 @Named(DebianIndexCreator.ID)
-@javax.inject.Singleton
+@Singleton
 public class DebianIndexCreator
         extends AbstractIndexCreator {
 
@@ -225,27 +227,29 @@ public class DebianIndexCreator
                        Field.Store.YES,
                        Field.Index.NO);
 
-    private final List<IndexerField> indexerFields =
+    private static final List<IndexerField> indexerFields =
       Arrays.asList(PACKAGE, ARCHITECTURE, INSTALLED_SIZE, MAINTAINER, VERSION,
                     DEPENDS, PRE_DEPENDS, PROVIDES, RECOMMENDS, SUGGESTS,
                     ENHANCES, BREAKS, CONFLICTS, REPLACES, SECTION, PRIORITY,
                     DESCRIPTION, FILENAME, SHA256, SHA512);
 
-    public DebianIndexCreator() {
+    private final Logger logger;
+
+    @Inject
+    public DebianIndexCreator(Logger logger) {
         super(ID, Arrays.asList(MinimalArtifactInfoIndexCreator.ID));
+        this.logger = logger;
     }
 
     @Override
     public void populateArtifactInfo(ArtifactContext ac) throws IOException {
         File artifact = ac.getArtifact();
-        if (artifact == null){
-          // TODO: Throw an exception?
-          return;
+        if (artifact == null) {
+            return;
         }
         ArtifactInfo info = ac.getArtifactInfo();
-        if( ! "deb".equals(info.packaging) ) {
-          // TODO: Throw an exception?
-          return;
+        if(! "deb".equals(info.packaging) ) {
+            return;
         }
 
         Map<String,String> artifact_attr = info.getAttributes();
@@ -264,17 +268,15 @@ public class DebianIndexCreator
         int count;
         byte[] b = new byte[512];
         FileInputStream is = new FileInputStream(artifact);
-        try{
-          while( (count = is.read(b)) >= 0) {
-            md5d.update(b, 0, count);
-            sha256.update(b, 0, count);
-            sha512.update(b, 0, count);
-          }
-        }catch(Exception e){
-          // TODO: re-throw the exception?
-          is.close();
-        }finally{
-          is.close();
+        try {
+            while ((count = is.read(b)) >= 0) {
+                md5d.update(b, 0, count);
+                sha256.update(b, 0, count);
+                sha512.update(b, 0, count);
+            }
+        }
+        finally {
+            is.close();
         }
 
         info.md5 = Hex.encodeHexString(md5d.digest());
@@ -282,7 +284,6 @@ public class DebianIndexCreator
                           Hex.encodeHexString(sha256.digest()));
         artifact_attr.put(DEBIAN.SHA512.getFieldName(),
                           Hex.encodeHexString(sha512.digest()));
-
     }
 
     private String getRelativeFileNameOfArtifact(ArtifactContext ac) {
@@ -290,12 +291,12 @@ public class DebianIndexCreator
 $ apt-cache show selinux-utils | grep 'File'
 Filename: pool/main/libs/libselinux/selinux-utils_2.5-2_amd64.deb
        */
-    	ArtifactInfo info = ac.getArtifactInfo();
+        ArtifactInfo info = ac.getArtifactInfo();
         return "./" +
-          info.groupId.replace(".", "/") + "/" +
-          info.artifactId + "/" +
-          info.version + "/" +
-          info.fname;
+                info.groupId.replace(".", "/") + "/" +
+                info.artifactId + "/" +
+                info.version + "/" +
+                info.fname;
 
     }
 
@@ -304,7 +305,6 @@ Filename: pool/main/libs/libselinux/selinux-utils_2.5-2_amd64.deb
      *
      * @param  ai  a map of artifact info
      * @param  doc the document to update
-     * @return     nothing it seems
      */
     @Override
     public void updateDocument(ArtifactInfo ai, Document doc) {
@@ -319,24 +319,20 @@ Filename: pool/main/libs/libselinux/selinux-utils_2.5-2_amd64.deb
     }
 
     /**
-
      * Updates field **indexerField** of document **doc** for artifact
      * info **ai**
-
      *
      * @param  ai           a map of artifact info
      * @param  doc          the document to update
      * @param  indexerField the field to update
-     * @return     nothing again it seems
      */
     private void updateOneDocumentField(ArtifactInfo ai,
                                         Document doc,
                                         IndexerField indexerField) {
         String fieldName = indexerField.getOntology().getFieldName();
         String fieldVal  = ai.getAttributes().get(fieldName);
-        if ( fieldVal == null ){
-          // TODO: throw exception?
-          return;
+        if ( fieldVal == null ) {
+            return;
         }
         Field field = indexerField.toField(fieldVal);
         doc.add(field);
@@ -345,25 +341,21 @@ Filename: pool/main/libs/libselinux/selinux-utils_2.5-2_amd64.deb
     @Override
     public boolean updateArtifactInfo(Document doc, ArtifactInfo ai) {
         String filename = doc.get(FILENAME.getKey());
-        if ( filename == null ){
-          // TODO: throw an exception?
-          return false;
-        }
-        if ( ! filename.endsWith(".deb")) {
-          // TODO: throw an exception?
-          return false;
+        if (filename == null || !filename.endsWith(".deb")) {
+            // Not ours to handle
+            return false;
         }
 
         for (IndexerField indexerField : indexerFields) {
-          try { 
-            updateOneArtifactInfoAttribute(doc, ai, indexerField);
-          }catch(Exception e){
-            // TODO: rethrow?
-            return false;
-          }
+            try {
+                updateOneArtifactInfoAttribute(doc, ai, indexerField);
+            }
+            catch (Exception e) {
+                logger.error(String.format("Could not update field %s", indexerField), e);
+                return false;
+            }
         }
         ai.md5 = doc.get(MD5.getKey());
-        // TODO: sha1? sha256?  sha384?  sha512?
         return true;
     }
 

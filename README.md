@@ -71,39 +71,6 @@ last (seems to be random), the debian package information may or may
 not be in the index and therefore may or may not be in the
 Packages/Packages.gz files.
 
-TODO:
-
-The filenames and paths do not comply with DFSG standards and
-therefore cannot be indexed with the standard distribution.  Please
-change the output filename to meet the standard naming convention (-cjac).
-
-
-Here are some examples of DFSG compliant .deb filenames:
-
-pinentry-curses_0.9.7-5_amd64.deb
-policycoreutils_2.5-1_amd64.deb
-policycoreutils-python-utils_2.5-1_amd64.deb
-pwgen_2.07-1.1_amd64.deb
-python3-selinux_2.5-1_amd64.deb
-python-audit_1%3a2.4.5-1+b1_amd64.deb
-python-ipy_1%3a0.83-1_all.deb
-python-selinux_2.5-1_amd64.deb
-python-semanage_2.5-1_amd64.deb
-python-sepolgen_1.2.3-1_all.deb
-python-sepolicy_2.5-1_amd64.deb
-python-setools_3.3.8+20151215-3_amd64.deb
-rake_10.5.0-2_all.deb
-ruby_1%3a2.3.0+4_amd64.deb
-ruby2.3_2.3.1-1_amd64.deb
-ruby-selinux_2.5-1_amd64.deb
-selinux-basics_0.5.4_all.deb
-setools_3.3.8+20151215-3_amd64.deb
-shorewall_5.0.7.2-1_all.deb
-shorewall6_5.0.7.2-1_all.deb
-shorewall-core_5.0.7.2-1_all.deb
-sshfs_2.5-1_amd64.deb
-
-
 To fix the index contents, start an 'Update Index' action on the
 repository. ( This does not work for me.  I must re-start the entire
 nexus service for indexes to be re-written.  Hard on production
