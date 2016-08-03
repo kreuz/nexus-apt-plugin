@@ -131,11 +131,11 @@ public class PGPSigner {
     private PGPSecretKey getSecretKey(InputStream input, String keyId) throws IOException, PGPException {
         PGPSecretKeyRingCollection keyrings = new PGPSecretKeyRingCollection(PGPUtil.getDecoderStream(input));
 
-        Iterator rIt = keyrings.getKeyRings();
+        Iterator<?> rIt = keyrings.getKeyRings();
 
         while (rIt.hasNext()) {
             PGPSecretKeyRing kRing = (PGPSecretKeyRing) rIt.next();
-            Iterator kIt = kRing.getSecretKeys();
+            Iterator<?> kIt = kRing.getSecretKeys();
 
             while (kIt.hasNext()) {
                 PGPSecretKey key = (PGPSecretKey) kIt.next();

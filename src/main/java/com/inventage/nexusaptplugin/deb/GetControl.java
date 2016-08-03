@@ -31,11 +31,13 @@ public class GetControl {
                 ArchiveEntry ae;
                 while ((ae = input.getNextEntry()) != null) {
                     if (ae.getName().endsWith("control")) {
+                    	arReader.close();
                         return IOUtils.readLines(input);
                     }
                 }
             }
         }
+        arReader.close();
         return null;
     }
 }

@@ -16,5 +16,6 @@ public class ArReaderTest {
             System.err.println(readableArFile.getName());
              readableArFile.open();
         }
+    	arReader.close();
     }
 }

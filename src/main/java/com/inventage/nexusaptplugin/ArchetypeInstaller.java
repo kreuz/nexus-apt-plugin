@@ -35,8 +35,8 @@ import org.sonatype.nexus.proxy.storage.UnsupportedStorageOperationException;
 
 import com.google.common.eventbus.Subscribe;
 
-import com.inventage.nexusaptplugin.capabilities.AptSigningActivatedEvent;
-import com.inventage.nexusaptplugin.capabilities.AptSigningDeactivatedEvent;
+import com.inventage.nexusaptplugin.capabilities.signing.AptSigningCapabilityActivatedEvent;
+import com.inventage.nexusaptplugin.capabilities.signing.AptSigningCapabilityDeactivatedEvent;
 
 /**
  * EventInspector that listens to registry events, repo addition and removal, and simply "hooks" in the generated
@@ -62,7 +62,7 @@ public class ArchetypeInstaller implements EventSubscriber {
     }
 
     @Subscribe
-    public void onAptSigningActivated(AptSigningActivatedEvent event) {
+    public void onAptSigningActivated(AptSigningCapabilityActivatedEvent event) {
         activeCatalogs.add(ArchetypeCatalog.SIGNING);
         for (Repository repository : configuredRepositories.values()) {
             installArchetypeCatalog(repository, ArchetypeCatalog.SIGNING);
@@ -70,7 +70,7 @@ public class ArchetypeInstaller implements EventSubscriber {
     }
 
     @Subscribe
-    public void onAptSigningDeactivated(AptSigningDeactivatedEvent event) {
+    public void onAptSigningDeactivated(AptSigningCapabilityDeactivatedEvent event) {
         activeCatalogs.remove(ArchetypeCatalog.SIGNING);
         for (Repository repository : configuredRepositories.values()) {
             removeArcheTypeCatalogIfPresent(repository, ArchetypeCatalog.SIGNING);
@@ -166,7 +166,6 @@ public class ArchetypeInstaller implements EventSubscriber {
     private void removeArcheTypeCatalogIfPresent(Repository repository, ArchetypeCatalog archetypeCatalog) {
         for (Map.Entry<String, String> entry : archetypeCatalog.getCatalogFiles().entrySet()) {
             final String filePath = entry.getKey();
-            final String generatorId = entry.getValue();
             final ResourceStoreRequest request = new ResourceStoreRequest(filePath);
             try {
                 repository.deleteItem(request);

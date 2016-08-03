@@ -12,6 +12,7 @@ import javax.inject.Singleton;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
+import com.inventage.nexusaptplugin.cache.generators.AptReleaseConfiguration;
 import com.inventage.nexusaptplugin.cache.generators.PackagesGenerator;
 import com.inventage.nexusaptplugin.cache.generators.PackagesGzGenerator;
 import com.inventage.nexusaptplugin.cache.generators.ReleaseGPGGenerator;
@@ -27,7 +28,8 @@ public class DebianFileManager {
     private final Map<String, FileGenerator> generators;
 
     @Inject
-    public DebianFileManager(AptSigningConfiguration aptSigningConfiguration) {
+    public DebianFileManager(AptReleaseConfiguration aptReleaseConfiguration,
+                             AptSigningConfiguration aptSigningConfiguration) {
         this.cache = CacheBuilder.newBuilder()
                 .expireAfterWrite(5, TimeUnit.SECONDS)
                 .build();
@@ -36,7 +38,7 @@ public class DebianFileManager {
 
         registerGenerator("Packages", new PackagesGenerator());
         registerGenerator("Packages.gz", new PackagesGzGenerator(this));
-        registerGenerator("Release", new ReleaseGenerator(this));
+        registerGenerator("Release", new ReleaseGenerator(this, aptReleaseConfiguration));
         registerGenerator("Release.gpg", new ReleaseGPGGenerator(this, aptSigningConfiguration));
         registerGenerator("apt-key.gpg.key", new SignKeyGenerator(aptSigningConfiguration));
     }
@@ -52,11 +54,11 @@ public class DebianFileManager {
     }
 
     public byte[] getFile(final String name, final RepositoryData data) throws ExecutionException {
-        String key = data.getRepositoryId() + "#" + name;
         if (!generators.containsKey(name)) {
             throw new IllegalArgumentException("Don't know how to generate " + name);
         }
 
+        String key = data.getRepositoryId() + "#" + name;
         return cache.get(key, new Callable<byte[]>() {
             @Override
             public byte[] call()
